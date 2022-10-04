@@ -1,112 +1,69 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import 'react-native-gesture-handler';
+import React, {useEffect} from 'react';
+import {StyleSheet, SafeAreaView, StatusBar} from 'react-native';
+import {NativeBaseProvider} from 'native-base';
+import {Provider} from 'react-redux';
+import {ApplicationProvider} from '@ui-kitten/components';
+import store from './src/redux/store';
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import SignupProvider from './src/context/SignupContext';
+import Routes from './src/router';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {colors, STRIPE_PUBLISH_KEY} from './src/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+export const TabBarContext = React.createContext();
+export const MultiStepSignUpContext = React.createContext();
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+const App = () => {
+  const [tabSettings, setTabSettings] = React.useState({
+    blurTabMode: false,
+    showTabBar: true,
+  });
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const [multiSetpSignUpObj, setMultiSetpSignUpObj] = React.useState(null);
+
+  const retriveLocalValues = async () => {
+    //TabContext
+    try {
+      const data = await AsyncStorage.getItem('tabContext');
+      setTabSettings(JSON.parse(data));
+    } catch (error) {
+      console.log(error, 'TabContext');
+    }
   };
 
+  useEffect(() => {
+    retriveLocalValues();
+  }, []);
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <>
+      <StatusBar backgroundColor={colors.amberColor} />
+      <TabBarContext.Provider value={{tabSettings, setTabSettings}}>
+        <MultiStepSignUpContext.Provider
+          value={{multiSetpSignUpObj, setMultiSetpSignUpObj}}>
+          <Provider store={store}>
+            <NativeBaseProvider>
+              <ApplicationProvider {...eva} theme={eva.light}>
+                <SignupProvider>
+                  <SafeAreaView style={styles.container}>
+                    <Routes />
+                  </SafeAreaView>
+                </SignupProvider>
+              </ApplicationProvider>
+            </NativeBaseProvider>
+          </Provider>
+        </MultiStepSignUpContext.Provider>
+      </TabBarContext.Provider>
+    </>
   );
 };
 
+export default App;
+
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  container: {
+    flex: 1,
   },
 });
-
-export default App;

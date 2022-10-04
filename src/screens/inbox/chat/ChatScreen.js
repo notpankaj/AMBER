@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Image,
   StyleSheet,
@@ -13,48 +13,47 @@ import {
   Dimensions,
   ToastAndroid,
   ActivityIndicator,
-} from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
-import Spin from "react-native-spinkit";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Entypo from "react-native-vector-icons/Entypo";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Octicons from "react-native-vector-icons/Octicons";
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import Spin from 'react-native-spinkit';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Octicons from 'react-native-vector-icons/Octicons';
 import AudioRecorderPlayer, {
   AudioEncoderAndroidType,
   AudioSourceAndroidType,
   AVEncoderAudioQualityIOSType,
   AVEncodingOption,
-} from "react-native-audio-recorder-player";
+} from 'react-native-audio-recorder-player';
 import {
   api_blockUser,
   api_sendChatAttachments,
   api_userReport,
   generate_rtcToken,
   SOCKET_URL,
-} from "../../../api_services";
-import MyLoader from "../../../components/MyLoader";
-import { useDispatch, useSelector } from "react-redux";
-import SocketIOClient from "socket.io-client";
+} from '../../../api_services';
+import MyLoader from '../../../components/MyLoader';
+import {useDispatch, useSelector} from 'react-redux';
+import SocketIOClient from 'socket.io-client';
 import {
   ADD_CHAT_STORAGE,
   CHAT_REDUCER_REFRESH,
   DESTORY_CHAT_STORAGE,
-} from "../../../redux/reducers/actionTypes";
-import { getOldChat } from "../../../redux/actions/chat.actions";
-import DefaultImage from "../../../components/DefaultImage";
-import GiftModal from "../../../components/GiftModal";
-import ActionSheet, { SheetManager } from "react-native-actions-sheet";
-import { createRef } from "react";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import ReportUser from "../../../components/ReportUser";
-import ImageComp from "../../../components/ImageComp";
-import RNFetchBlob from "rn-fetch-blob";
-import VideoPlayerOverlay from "./components/VideoPlayerOverlay";
-import AudioMsg from "./components/AudioMsg";
-import ImageOverlay from "./components/ImageOverlay";
+} from '../../../redux/reducers/actionTypes';
+import {getOldChat} from '../../../redux/actions/chat.actions';
+import DefaultImage from '../../../components/DefaultImage';
+import GiftModal from '../../../components/GiftModal';
+import ActionSheet, {SheetManager} from 'react-native-actions-sheet';
+import {createRef} from 'react';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import ReportUser from '../../../components/ReportUser';
+import ImageComp from '../../../components/ImageComp';
+import VideoPlayerOverlay from './components/VideoPlayerOverlay';
+import AudioMsg from './components/AudioMsg';
+import ImageOverlay from './components/ImageOverlay';
 
 const audioSet = {
   AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -64,7 +63,7 @@ const audioSet = {
   AVFormatIDKeyIOS: AVEncodingOption.aac,
 };
 
-const { width, height } = Dimensions.get("window");
+const {width, height} = Dimensions.get('window');
 
 const ChatHeader = ({
   navigation,
@@ -74,13 +73,13 @@ const ChatHeader = ({
   handldeSheet,
   handleReportUserSheet,
 }) => {
-  console.log(otherUserID, "otherUserID - ChatHeader");
+  console.log(otherUserID, 'otherUserID - ChatHeader');
   const [isLoading, setIsLoading] = useState(false);
-  const { auth, coin } = useSelector((state) => state);
+  const {auth, coin} = useSelector(state => state);
   const socketRef = useRef(null);
   const hitCallUserSocket = () => {
     socketRef.current = SocketIOClient(SOCKET_URL, {
-      transports: ["websocket"],
+      transports: ['websocket'],
       query: {
         token: auth?.accessToken,
       },
@@ -91,8 +90,8 @@ const ChatHeader = ({
       callerId: auth?.user?.id,
       username: auth?.user?.username,
     };
-    socketRef.current.emit("callUser", dataObj);
-    console.log("::::::::::::::::CALL USER EMITTED  with", dataObj);
+    socketRef.current.emit('callUser', dataObj);
+    console.log('::::::::::::::::CALL USER EMITTED  with', dataObj);
   };
 
   const getTokenForVideoCall = async () => {
@@ -105,7 +104,7 @@ const ChatHeader = ({
       });
 
       if (response.isSuccess && response.statusCode === 200) {
-        console.log(response, "generate_rtcToken");
+        console.log(response, 'generate_rtcToken');
         const api_uid = response.data.userId;
         const api_agora_token = response.data.token;
         const channel_id = auth?.user?.id;
@@ -113,21 +112,21 @@ const ChatHeader = ({
 
         if (api_uid && api_agora_token && channel_id) {
           hitCallUserSocket();
-          navigation.navigate("LiveVideoCall", {
+          navigation.navigate('LiveVideoCall', {
             api_uid,
             api_agora_token,
             channel_id,
-            call_type: "CALLER",
-            call_mode: "NORMAL",
+            call_type: 'CALLER',
+            call_mode: 'NORMAL',
             callingToUserId: otherUserID,
             call_rate,
           });
         }
       } else {
-        Alert.alert("Error", "failed to generate agora token");
+        Alert.alert('Error', 'failed to generate agora token');
       }
     } catch (error) {
-      Alert.alert("Error", error?.message || "failed to generate agora token");
+      Alert.alert('Error', error?.message || 'failed to generate agora token');
     } finally {
       setIsLoading(false);
     }
@@ -135,7 +134,7 @@ const ChatHeader = ({
 
   const handleVideoCallPress = () => {
     // for female
-    if (auth?.user?.gender === "female") {
+    if (auth?.user?.gender === 'female') {
       getTokenForVideoCall();
       return;
     }
@@ -144,16 +143,16 @@ const ChatHeader = ({
     if (coin?.currectCoin > 59) {
       getTokenForVideoCall();
     } else {
-      Alert.alert("Alert", "you dont have enough coin to call,", [
+      Alert.alert('Alert', 'you dont have enough coin to call,', [
         {
-          text: "Buy Now",
-          onPress: () => navigation.navigate("Shop"),
-          style: "cancel",
+          text: 'Buy Now',
+          onPress: () => navigation.navigate('Shop'),
+          style: 'cancel',
         },
         {
-          text: "Later",
+          text: 'Later',
           onPress: () => {},
-          style: "cancel",
+          style: 'cancel',
         },
       ]);
     }
@@ -162,14 +161,13 @@ const ChatHeader = ({
   return (
     <View
       style={{
-        width: "100%",
+        width: '100%',
         height: 70,
-        borderBottomColor: "rgba(0,0,0,0.3)",
+        borderBottomColor: 'rgba(0,0,0,0.3)',
         borderBottomWidth: 2,
-        flexDirection: "row",
-        alignItems: "center",
-      }}
-    >
+        flexDirection: 'row',
+        alignItems: 'center',
+      }}>
       <TouchableOpacity onPress={() => navigation.pop()}>
         <Icon
           name="ios-arrow-back"
@@ -201,27 +199,25 @@ const ChatHeader = ({
             borderRadius: 50,
           }}
           iconSize={50}
-          color={"#555"}
+          color={'#555'}
         />
       )}
-      <View style={{ flex: 1, padding: 10 }}>
+      <View style={{flex: 1, padding: 10}}>
         <Text
-          style={{ fontSize: 20, fontWeight: "bold", color: "rgba(0,0,0,0.6)" }}
-        >
-          {name || "no name"}
+          style={{fontSize: 20, fontWeight: 'bold', color: 'rgba(0,0,0,0.6)'}}>
+          {name || 'no name'}
         </Text>
       </View>
       <View
         style={{
-          flexDirection: "row",
+          flexDirection: 'row',
           width: 80,
-          justifyContent: "space-evenly",
-        }}
-      >
+          justifyContent: 'space-evenly',
+        }}>
         <TouchableOpacity onPress={() => handleVideoCallPress()}>
           <FontAwesome
             name="video-camera"
-            style={{ marginTop: 1 }}
+            style={{marginTop: 1}}
             size={24}
             color="gray"
           />
@@ -229,13 +225,12 @@ const ChatHeader = ({
         <TouchableOpacity
           onPress={() => {
             handldeSheet(true);
-          }}
-        >
+          }}>
           <Entypo
             name="dots-three-vertical"
             size={20}
-            style={{ marginTop: 1 }}
-            color={"gray"}
+            style={{marginTop: 1}}
+            color={'gray'}
           />
         </TouchableOpacity>
       </View>
@@ -253,7 +248,7 @@ const ChatForm = ({
   handleFileAudioSend,
   sendAudioLoading,
 }) => {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [isGiftModalVisible, setIsGiftModalVisible] = useState(false);
 
   const [recordSecs, setRecordSecs] = React.useState(null);
@@ -272,16 +267,16 @@ const ChatForm = ({
 
   const handleSendMessage = () => {
     sendChatMsg(message);
-    setMessage("");
+    setMessage('');
   };
 
-  const { auth } = useSelector((state) => state);
+  const {auth} = useSelector(state => state);
 
   const onTyping = () => {
     fireTypingEvent(true);
   };
 
-  const toggleGiftModal = (bool) => {
+  const toggleGiftModal = bool => {
     setIsGiftModalVisible(bool);
   };
 
@@ -290,25 +285,25 @@ const ChatForm = ({
   }, [message]);
 
   const askForPermission = async () => {
-    if (Platform.OS === "android") {
+    if (Platform.OS === 'android') {
       try {
         const grants = await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
           PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
           PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
         ]);
-        console.log("write external stroage", grants);
+        console.log('write external stroage', grants);
         if (
-          grants["android.permission.WRITE_EXTERNAL_STORAGE"] ===
+          grants['android.permission.WRITE_EXTERNAL_STORAGE'] ===
             PermissionsAndroid.RESULTS.GRANTED &&
-          grants["android.permission.READ_EXTERNAL_STORAGE"] ===
+          grants['android.permission.READ_EXTERNAL_STORAGE'] ===
             PermissionsAndroid.RESULTS.GRANTED &&
-          grants["android.permission.RECORD_AUDIO"] ===
+          grants['android.permission.RECORD_AUDIO'] ===
             PermissionsAndroid.RESULTS.GRANTED
         ) {
-          console.log("Permissions granted");
+          console.log('Permissions granted');
         } else {
-          console.log("All required permissions not granted");
+          console.log('All required permissions not granted');
           return;
         }
       } catch (err) {
@@ -323,14 +318,14 @@ const ChatForm = ({
   };
 
   const onStartRecord = async () => {
-    console.log("onStartRecord");
+    console.log('onStartRecord');
     setRecordedVoiceURI(null);
     setHasRecordedAudioToPlay(false);
     audioRecorderInit();
     setIsRecordBoxShow(true);
     setIsListening(true);
     const result = await audioRecorderPlayer.startRecorder(null, audioSet);
-    audioRecorderPlayer.addRecordBackListener((e) => {
+    audioRecorderPlayer.addRecordBackListener(e => {
       setRecordSecs(e.currentPosition);
       setRecordTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
       return;
@@ -339,7 +334,7 @@ const ChatForm = ({
   };
 
   const onStopRecord = async () => {
-    console.log("onStopRecord");
+    console.log('onStopRecord');
     setIsListening(false);
     try {
       const result = await audioRecorderPlayer.stopRecorder();
@@ -349,22 +344,22 @@ const ChatForm = ({
 
       // send Audio directly
       handleFileAudioSend({
-        type: "audio",
-        file: { uri: result },
+        type: 'audio',
+        file: {uri: result},
       });
     } catch (error) {
-      console.log("error in onStopRecord", error?.message);
+      console.log('error in onStopRecord', error?.message);
     }
     // setHasRecordedAudioToPlay(true);
     // setRecordedVoiceURI(result);
   };
 
   const onStartPlay = async () => {
-    console.log("onStartPlay");
+    console.log('onStartPlay');
     setIsPlayingRecordedSound(true);
     const msg = audioRecorderPlayer.startPlayer();
     console.log(msg);
-    audioRecorderPlayer.addPlayBackListener((e) => {
+    audioRecorderPlayer.addPlayBackListener(e => {
       setCurrentPositionSec(e.currentPosition);
       setCurrentDurationSec(e.duration);
       setPlayTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
@@ -374,7 +369,7 @@ const ChatForm = ({
   };
 
   const onPausePlay = async () => {
-    console.log("onPausePlay");
+    console.log('onPausePlay');
     setHasRecordedAudioToPlay(false);
     await audioRecorderPlayer.pausePlayer();
   };
@@ -383,19 +378,19 @@ const ChatForm = ({
     setHasRecordedAudioToPlay(false);
     setIsPlayingRecordedSound(false);
     handleCloseRecordBox();
-    console.log("onStopPlay");
+    console.log('onStopPlay');
     await audioRecorderPlayer.stopPlayer();
     await audioRecorderPlayer.removePlayBackListener();
   };
 
   const handldleMicPress = () => {
-    console.log("OUT PRESS");
+    console.log('OUT PRESS');
     askForPermission();
     onStartRecord();
   };
 
   const handleCloseRecordBox = () => {
-    console.log("OUT PRESS");
+    console.log('OUT PRESS');
     setIsPlayingRecordedSound(false);
     setIsRecordBoxShow(false);
     setHasRecordedAudioToPlay(false);
@@ -414,18 +409,17 @@ const ChatForm = ({
       {isRecordBoxShow && (
         <View
           style={{
-            alignSelf: "center",
+            alignSelf: 'center',
             height: 200,
             width: 200,
-            backgroundColor: "rgba(223, 175, 81, 0.8)",
+            backgroundColor: 'rgba(223, 175, 81, 0.8)',
             padding: 10,
             margin: 5,
             borderRadius: 100,
 
-            position: "absolute",
+            position: 'absolute',
             bottom: height / 2,
-          }}
-        >
+          }}>
           {/* <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
@@ -437,27 +431,25 @@ const ChatForm = ({
 
           <View
             style={{
-              width: "100%",
+              width: '100%',
               height: 150,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             {isListening && (
               <View>
                 <Spin
                   style={{
-                    justifyContent: "center",
-                    alignItems: "center",
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}
                   type="Bounce"
                   isVisible={true}
                   color="#fff"
-                  size={100}
-                ></Spin>
+                  size={100}></Spin>
                 <Ionicons
                   style={{
-                    position: "absolute",
+                    position: 'absolute',
                     top: 32,
                     left: 32,
                   }}
@@ -467,7 +459,7 @@ const ChatForm = ({
                 />
               </View>
             )}
-            <Text style={{ fontSize: 30, color: "#222" }}>{recordTime}</Text>
+            <Text style={{fontSize: 30, color: '#222'}}>{recordTime}</Text>
 
             {/* {isListening && (
               <TouchableOpacity
@@ -488,19 +480,17 @@ const ChatForm = ({
           {isPlayingRecordedSound && (
             <View
               style={{
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <Text
                 style={{
-                  color: "#444",
+                  color: '#444',
                   fontSize: 18,
                   letterSpacing: 1,
-                  fontWeight: "bold",
-                }}
-              >
+                  fontWeight: 'bold',
+                }}>
                 {`${playTime}  /  ${duration}`}
               </Text>
             </View>
@@ -508,33 +498,31 @@ const ChatForm = ({
           {hasRecordedAudioToPlay && (
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-evenly",
-                alignItems: "center",
-                backgroundColor: "rgba(173, 170, 170, 0.4)",
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+                alignItems: 'center',
+                backgroundColor: 'rgba(173, 170, 170, 0.4)',
                 borderRadius: 10,
                 margin: 5,
                 marginBottom: 10,
                 height: 60,
                 width: width - 10,
-              }}
-            >
+              }}>
               <TouchableOpacity
                 onPress={onStopPlay}
                 style={{
                   margin: 6,
-                  backgroundColor: "rgba(226, 74, 74, 0.6)",
+                  backgroundColor: 'rgba(226, 74, 74, 0.6)',
                   width: 45,
                   height: 45,
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   borderRadius: 100,
-                }}
-              >
+                }}>
                 <MaterialCommunityIcons
                   name="delete-empty"
                   size={24 + 5}
-                  color={"rgba(0,0,0,0.6)"}
+                  color={'rgba(0,0,0,0.6)'}
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -543,20 +531,19 @@ const ChatForm = ({
                   margin: 6,
                   width: 45,
                   height: 45,
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   borderRadius: 100,
-                  backgroundColor: "rgba(22, 22, 22, 0.8)",
-                }}
-              >
-                <Entypo name="controller-play" size={24} color={"#fff"} />
+                  backgroundColor: 'rgba(22, 22, 22, 0.8)',
+                }}>
+                <Entypo name="controller-play" size={24} color={'#fff'} />
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={() => {
                   handleFileAudioSend({
-                    type: "audio",
-                    file: { uri: recordedVoiceURI },
+                    type: 'audio',
+                    file: {uri: recordedVoiceURI},
                   });
                   // Alert.alert("Will Send this", recordedVoiceURI);
                 }}
@@ -564,13 +551,12 @@ const ChatForm = ({
                   margin: 6,
                   width: 45,
                   height: 45,
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   borderRadius: 100,
-                  backgroundColor: "rgba(93, 226, 74, 0.8)",
-                }}
-              >
-                <Ionicons name="ios-send" size={20} color={"rgba(0,0,0,0.6)"} />
+                  backgroundColor: 'rgba(93, 226, 74, 0.8)',
+                }}>
+                <Ionicons name="ios-send" size={20} color={'rgba(0,0,0,0.6)'} />
               </TouchableOpacity>
             </View>
           )}
@@ -579,27 +565,25 @@ const ChatForm = ({
       {/* // * nd  */}
       <View
         style={{
-          width: "100%",
+          width: '100%',
           height: 50,
-          flexDirection: "row",
-          alignItems: "center",
+          flexDirection: 'row',
+          alignItems: 'center',
           marginBottom: 20,
-        }}
-      >
+        }}>
         <TouchableOpacity
           style={{
             marginLeft: 10,
-            backgroundColor: "rgba(0,0,0,0.1)",
+            backgroundColor: 'rgba(0,0,0,0.1)',
             width: 30,
             height: 30,
-            justifyContent: "center",
-            alignItems: "center",
+            justifyContent: 'center',
+            alignItems: 'center',
             borderRadius: 100,
           }}
           onPress={() => {
             handldeSheet2(true);
-          }}
-        >
+          }}>
           <Ionicons name="ios-camera" size={20} color="gray" />
         </TouchableOpacity>
 
@@ -607,28 +591,26 @@ const ChatForm = ({
         <View
           style={{
             flex: 1,
-            flexDirection: "row",
+            flexDirection: 'row',
             paddingHorizontal: 10,
-            alignItems: "center",
+            alignItems: 'center',
             marginHorizontal: 15,
             borderRadius: 40,
             borderWidth: 2,
-            borderColor: "gray",
-          }}
-        >
-          {auth?.user?.gender === "male" && (
+            borderColor: 'gray',
+          }}>
+          {auth?.user?.gender === 'male' && (
             <TouchableOpacity
               style={{
                 marginLeft: 5,
-                backgroundColor: "rgba(0,0,0,0.1)",
+                backgroundColor: 'rgba(0,0,0,0.1)',
                 width: 35,
                 height: 35,
-                justifyContent: "center",
-                alignItems: "center",
+                justifyContent: 'center',
+                alignItems: 'center',
                 borderRadius: 100,
               }}
-              onPress={() => toggleGiftModal(!isGiftModalVisible)}
-            >
+              onPress={() => toggleGiftModal(!isGiftModalVisible)}>
               <Ionicons name="gift" size={20} color="gray" />
             </TouchableOpacity>
           )}
@@ -636,16 +618,16 @@ const ChatForm = ({
             style={{
               marginHorizontal: 10,
               paddingRight: 12,
-              color: "#000",
+              color: '#000',
             }}
             onFocus={() => {
-              console.log("focus received");
+              console.log('focus received');
               onTyping();
             }}
             placeholderTextColor="#555"
-            onBlur={() => console.log("focus lost")}
+            onBlur={() => console.log('focus lost')}
             value={message}
-            onChangeText={(value) => setMessage(value.trimStart())}
+            onChangeText={value => setMessage(value.trimStart())}
             placeholder="Type Something..."
             onSubmitEditing={handleSendMessage}
           />
@@ -653,23 +635,21 @@ const ChatForm = ({
         {/* input end */}
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
+            flexDirection: 'row',
+            justifyContent: 'space-between',
             marginRight: 15,
-          }}
-        >
+          }}>
           {message.length ? (
             <TouchableOpacity
               onPress={handleSendMessage}
               style={{
-                backgroundColor: "rgba(0,0,0,0.1)",
+                backgroundColor: 'rgba(0,0,0,0.1)',
                 width: 35,
                 height: 35,
-                justifyContent: "center",
-                alignItems: "center",
+                justifyContent: 'center',
+                alignItems: 'center',
                 borderRadius: 100,
-              }}
-            >
+              }}>
               <Ionicons name="ios-send" size={22} color="gray" />
             </TouchableOpacity>
           ) : sendAudioLoading ? (
@@ -679,14 +659,13 @@ const ChatForm = ({
               onPressIn={handldleMicPress}
               onPressOut={handleCloseRecordBox}
               style={{
-                backgroundColor: "rgba(0,0,0,0.1)",
+                backgroundColor: 'rgba(0,0,0,0.1)',
                 width: 35,
                 height: 35,
-                justifyContent: "center",
-                alignItems: "center",
+                justifyContent: 'center',
+                alignItems: 'center',
                 borderRadius: 100,
-              }}
-            >
+              }}>
               <FontAwesome name="microphone" size={24} color="gray" />
             </Pressable>
           )}
@@ -696,16 +675,16 @@ const ChatForm = ({
   );
 };
 
-const MessageStatus = ({ status }) => {
+const MessageStatus = ({status}) => {
   return (
-    <View style={{ width: 20 }}>
-      {status === "SEND" && (
+    <View style={{width: 20}}>
+      {status === 'SEND' && (
         <Ionicons name="checkmark" size={18} color="#fff" />
       )}
-      {status === "RECIVED" && (
+      {status === 'RECIVED' && (
         <Ionicons name="checkmark-done" size={18} color="#fff" />
       )}
-      {status === "SEEN" && (
+      {status === 'SEEN' && (
         <Ionicons name="checkmark-done" size={18} color="#03f6c5" />
       )}
     </View>
@@ -718,10 +697,10 @@ const ChatMessage = ({
   setVideoPlayerOverlayUri,
   setImageOverlayUri,
 }) => {
-  const [status, setStatus] = useState("SEND");
+  const [status, setStatus] = useState('SEND');
   const [isSideLeft, setIsSideLeft] = useState(false);
 
-  const { user } = useSelector((state) => state.auth);
+  const {user} = useSelector(state => state.auth);
 
   useEffect(() => {
     if (user?.id !== item?.msgFrom && user?.id !== item?.sender) {
@@ -729,30 +708,29 @@ const ChatMessage = ({
     }
   }, [item]);
 
-  if (item?.attachment?.filetype === "audio" || item?.fileType === "audio") {
+  if (item?.attachment?.filetype === 'audio' || item?.fileType === 'audio') {
     return <AudioMsg item={item} />;
   }
-  if (item?.attachment?.filetype === "image" || item?.fileType === "image") {
+  if (item?.attachment?.filetype === 'image' || item?.fileType === 'image') {
     return (
       <TouchableOpacity
         onPress={() =>
           setImageOverlayUri(
             `${item?.attachment?.fileUrl || item?.attachment}${
-              item?.attachment?.file || ""
-            }`
+              item?.attachment?.file || ''
+            }`,
           )
         }
         style={{
           marginVertical: 15,
           width: 200,
           height: 200,
-          alignSelf: item?.msgFrom === user?.id ? "flex-end" : "flex-start",
-        }}
-      >
+          alignSelf: item?.msgFrom === user?.id ? 'flex-end' : 'flex-start',
+        }}>
         {isSideLeft ? (
           <Octicons
             style={{
-              position: "absolute",
+              position: 'absolute',
               zIndex: -1,
               top: -22,
             }}
@@ -763,7 +741,7 @@ const ChatMessage = ({
         ) : (
           <Octicons
             style={{
-              position: "absolute",
+              position: 'absolute',
               zIndex: -1,
               top: -22,
               right: 0,
@@ -775,12 +753,12 @@ const ChatMessage = ({
         )}
         <ImageComp
           URI={`${item?.attachment?.fileUrl || item?.attachment}${
-            item?.attachment?.file || ""
+            item?.attachment?.file || ''
           }`}
           imageStyles={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: isSideLeft ? "#222" : "#23a12f",
+            width: '100%',
+            height: '100%',
+            backgroundColor: isSideLeft ? '#222' : '#23a12f',
             padding: 2,
             borderRadius: 5,
           }}
@@ -789,21 +767,20 @@ const ChatMessage = ({
     );
   }
 
-  if (item?.thumbnail || item?.attachment?.filetype === "video") {
+  if (item?.thumbnail || item?.attachment?.filetype === 'video') {
     return (
       <View
         style={{
           marginVertical: 15,
           width: 200,
           height: 200,
-          alignSelf: item?.msgFrom === user?.id ? "flex-end" : "flex-start",
+          alignSelf: item?.msgFrom === user?.id ? 'flex-end' : 'flex-start',
           borderRadius: 5,
-        }}
-      >
+        }}>
         {isSideLeft ? (
           <Octicons
             style={{
-              position: "absolute",
+              position: 'absolute',
               zIndex: -1,
               top: -22,
             }}
@@ -814,7 +791,7 @@ const ChatMessage = ({
         ) : (
           <Octicons
             style={{
-              position: "absolute",
+              position: 'absolute',
               zIndex: -1,
               top: -22,
               right: 0,
@@ -825,7 +802,7 @@ const ChatMessage = ({
           />
         )}
         <TouchableOpacity
-          style={{ position: "relative" }}
+          style={{position: 'relative'}}
           onPress={() => {
             let URI;
             if (item?.attachment?.fileUrl) {
@@ -834,16 +811,15 @@ const ChatMessage = ({
               URI = item?.attachment;
             }
             setVideoPlayerOverlayUri(URI);
-          }}
-        >
+          }}>
           <ImageComp
             URI={`${item?.attachment?.fileUrl || item?.thumbnail}${
-              item?.attachment?.thumbnail || ""
+              item?.attachment?.thumbnail || ''
             }`}
             imageStyles={{
-              width: "100%",
-              height: "100%",
-              backgroundColor: isSideLeft ? "#222" : "#23a12f",
+              width: '100%',
+              height: '100%',
+              backgroundColor: isSideLeft ? '#222' : '#23a12f',
               padding: 2,
               borderRadius: 5,
             }}
@@ -853,11 +829,10 @@ const ChatMessage = ({
               width: 90,
               height: 90,
               borderRadius: 100,
-              position: "absolute",
+              position: 'absolute',
               top: 70,
               left: 70,
-            }}
-          >
+            }}>
             <Ionicons name="play-circle-outline" size={60} color="#fff" />
           </View>
         </TouchableOpacity>
@@ -869,12 +844,11 @@ const ChatMessage = ({
     return (
       <View
         style={{
-          width: "100%",
-        }}
-      >
+          width: '100%',
+        }}>
         <View
           style={{
-            alignSelf: isSideLeft ? "flex-start" : "flex-end",
+            alignSelf: isSideLeft ? 'flex-start' : 'flex-end',
             // backgroundColor: item?.msgFrom === user.id ? '#222' : '#23a12f',
             padding: 5,
             width: 80,
@@ -882,17 +856,16 @@ const ChatMessage = ({
             borderRadius: 10,
             marginVertical: 10,
             marginTop: 15,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
           {/* <Text>
         {item.gift.title}
       </Text> */}
           {item?.gift?.iconUrl ? (
             <ImageComp
               imageContainerStyles={{
-                backgroundColor: "transparent",
+                backgroundColor: 'transparent',
               }}
               imageStyles={{
                 width: 75,
@@ -903,7 +876,7 @@ const ChatMessage = ({
           ) : item?.gift?.icon ? (
             <ImageComp
               imageContainerStyles={{
-                backgroundColor: "transparent",
+                backgroundColor: 'transparent',
               }}
               imageStyles={{
                 width: 75,
@@ -917,7 +890,7 @@ const ChatMessage = ({
                 width: 75,
                 height: 75,
               }}
-              source={require("../../../assets/icons/gifts/gift1.png")}
+              source={require('../../../assets/icons/gifts/gift1.png')}
             />
           )}
         </View>
@@ -927,21 +900,20 @@ const ChatMessage = ({
     return (
       <View
         style={{
-          backgroundColor: isSideLeft ? "#222" : "#23a12f",
-          alignSelf: isSideLeft ? "flex-start" : "flex-end",
+          backgroundColor: isSideLeft ? '#222' : '#23a12f',
+          alignSelf: isSideLeft ? 'flex-start' : 'flex-end',
           padding: 5,
-          width: "60%",
+          width: '60%',
           maxWidth: 300,
           borderRadius: 10,
           marginVertical: 10,
           marginTop: 15,
-        }}
-      >
+        }}>
         {/* messageTIP */}
         {isSideLeft ? (
           <Octicons
             style={{
-              position: "absolute",
+              position: 'absolute',
               zIndex: -1,
               top: -22,
             }}
@@ -952,7 +924,7 @@ const ChatMessage = ({
         ) : (
           <Octicons
             style={{
-              position: "absolute",
+              position: 'absolute',
               zIndex: -1,
               top: -22,
               right: 0,
@@ -963,7 +935,7 @@ const ChatMessage = ({
           />
         )}
 
-        <Text style={{ color: "#fff", padding: 5, fontSize: 15 }}>
+        <Text style={{color: '#fff', padding: 5, fontSize: 15}}>
           {/* {item.message} */}
           {item?.msg || item?.content}
         </Text>
@@ -971,12 +943,11 @@ const ChatMessage = ({
         <View
           style={{
             height: 15,
-            justifyContent: "flex-end",
-            alignItems: "center",
-            flexDirection: "row",
-          }}
-        >
-          <Text style={{ color: "#fff", fontSize: 12, marginRight: 10 }}>
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            flexDirection: 'row',
+          }}>
+          <Text style={{color: '#fff', fontSize: 12, marginRight: 10}}>
             {item?.createdAt
               ? new Date(item?.createdAt).toLocaleTimeString()
               : null}
@@ -1008,7 +979,7 @@ const ChatBox = ({
 }) => {
   const chatListRef = useRef(null);
 
-  const { error, loading } = useSelector((state) => state.chat);
+  const {error, loading} = useSelector(state => state.chat);
 
   const dispatch = useDispatch();
   const scrollChatToEnd = () => {
@@ -1028,32 +999,30 @@ const ChatBox = ({
 
   useEffect(() => {
     if (error) {
-      Alert.alert("Error", error || "something went wrong!");
-      dispatch({ type: CHAT_REDUCER_REFRESH });
+      Alert.alert('Error', error || 'something went wrong!');
+      dispatch({type: CHAT_REDUCER_REFRESH});
     }
   }, [error]);
 
-  console.log({ fileToSend }, "fileToSend");
+  console.log({fileToSend}, 'fileToSend');
   return (
     <View
       style={{
         flex: 1,
         margin: 10,
-      }}
-    >
+      }}>
       {fileToSend && (
         <View
           style={{
-            backgroundColor: "rgba(0,0,0,0.2)",
-            width: "100%",
-            position: "absolute",
+            backgroundColor: 'rgba(0,0,0,0.2)',
+            width: '100%',
+            position: 'absolute',
             zIndex: 10,
             bottom: 0,
-            flexDirection: "row",
+            flexDirection: 'row',
             padding: 10,
             borderRadius: 10,
-          }}
-        >
+          }}>
           <Image
             source={fileToSend?.file}
             resizeMode="cover"
@@ -1066,76 +1035,69 @@ const ChatBox = ({
           <View
             style={{
               flex: 1,
-              justifyContent: "space-evenly",
-              alignItems: "center",
-            }}
-          >
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+            }}>
             <TouchableOpacity
               style={{
-                flexDirection: "row",
-                width: "100%",
+                flexDirection: 'row',
+                width: '100%',
                 padding: 15,
-                alignItems: "center",
+                alignItems: 'center',
               }}
-              onPress={() => handleFileSend(fileToSend)}
-            >
+              onPress={() => handleFileSend(fileToSend)}>
               <View
                 style={{
                   width: 30,
                   height: 30,
-                  backgroundColor: "rgba(0,0,0,0.2)",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  backgroundColor: 'rgba(0,0,0,0.2)',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   borderRadius: 100,
-                }}
-              >
+                }}>
                 <Ionicons name="send" size={18} color="#000" />
               </View>
 
               {fileSendLoading ? (
-                <ActivityIndicator size={"small"} color="green" />
+                <ActivityIndicator size={'small'} color="green" />
               ) : (
                 <Text
                   style={{
-                    color: "#222",
+                    color: '#222',
                     fontSize: 18,
-                    fontWeight: "bold",
+                    fontWeight: 'bold',
                     marginLeft: 10,
-                  }}
-                >
+                  }}>
                   Send
                 </Text>
               )}
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                flexDirection: "row",
-                width: "100%",
+                flexDirection: 'row',
+                width: '100%',
                 padding: 15,
-                alignItems: "center",
+                alignItems: 'center',
               }}
-              onPress={() => setFileToSend(null)}
-            >
+              onPress={() => setFileToSend(null)}>
               <View
                 style={{
                   width: 30,
                   height: 30,
-                  backgroundColor: "rgba(0,0,0,0.3)",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  backgroundColor: 'rgba(0,0,0,0.3)',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   borderRadius: 100,
-                }}
-              >
+                }}>
                 <Ionicons name="close" size={18} color="#000" />
               </View>
               <Text
                 style={{
                   marginLeft: 10,
-                  color: "#222",
+                  color: '#222',
                   fontSize: 18,
-                  fontWeight: "bold",
-                }}
-              >
+                  fontWeight: 'bold',
+                }}>
                 Cancel
               </Text>
             </TouchableOpacity>
@@ -1144,11 +1106,11 @@ const ChatBox = ({
       )}
 
       {loading ? (
-        <View style={{ width: "100%", height: "100%" }}>
+        <View style={{width: '100%', height: '100%'}}>
           <MyLoader
             visible={true}
-            text={"getting older chat"}
-            bgColor={"transparent"}
+            text={'getting older chat'}
+            bgColor={'transparent'}
           />
         </View>
       ) : null}
@@ -1162,11 +1124,11 @@ const ChatBox = ({
         keyExtractor={(item, idx) => item?._id || idx}
         numColumns={1}
         ListEmptyComponent={() => (
-          <Text style={{ textAlign: "center", color: "#555" }}>
+          <Text style={{textAlign: 'center', color: '#555'}}>
             send message to start conversation
           </Text>
         )}
-        renderItem={({ item, index }) => (
+        renderItem={({item, index}) => (
           <ChatMessage
             setImageOverlayUri={setImageOverlayUri}
             setVideoPlayerOverlayUri={setVideoPlayerOverlayUri}
@@ -1174,7 +1136,7 @@ const ChatBox = ({
             item={item}
           />
         )}
-        onScroll={(event) => {
+        onScroll={event => {
           if (event.nativeEvent.contentOffset.y === 0) {
             loadMoreOldChat();
           }
@@ -1198,24 +1160,22 @@ const ChatBox = ({
         <View
           style={{
             padding: 5,
-            position: "absolute",
+            position: 'absolute',
             bottom: 0,
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
           <Text
             style={{
-              textAlign: "center",
-              backgroundColor: "#444",
+              textAlign: 'center',
+              backgroundColor: '#444',
               width: 70,
               borderRadius: 20,
               padding: 5,
               fontSize: 12,
-              color: "#FFF",
-            }}
-          >
+              color: '#FFF',
+            }}>
             typing...
           </Text>
         </View>
@@ -1225,57 +1185,57 @@ const ChatBox = ({
 };
 
 if (!window.location) {
-  window.navigator.userAgent = "ReactNative";
+  window.navigator.userAgent = 'ReactNative';
 }
 
 const REPORT_DATA = [
   {
-    icon: "user",
+    icon: 'user',
     title: "I don't like this user",
-    color: "green",
+    color: 'green',
   },
   {
-    color: "pink",
-    icon: "skin",
-    title: "Nuditiy and inappropriate content",
+    color: 'pink',
+    icon: 'skin',
+    title: 'Nuditiy and inappropriate content',
   },
   {
-    color: "gray",
-    icon: "clockcircle",
-    title: "Spam or fraud",
+    color: 'gray',
+    icon: 'clockcircle',
+    title: 'Spam or fraud',
   },
   {
-    color: "green",
-    icon: "notification",
-    title: "Verbal harassment",
+    color: 'green',
+    icon: 'notification',
+    title: 'Verbal harassment',
   },
   {
-    color: "orange",
-    icon: "exclamationcircleo",
-    title: "Violent content",
+    color: 'orange',
+    icon: 'exclamationcircleo',
+    title: 'Violent content',
   },
   {
-    color: "purple",
-    icon: "warning",
-    title: "Underage",
+    color: 'purple',
+    icon: 'warning',
+    title: 'Underage',
   },
   {
-    color: "red",
-    icon: "fork",
-    title: "False gender",
+    color: 'red',
+    icon: 'fork',
+    title: 'False gender',
   },
 ];
-const ChatScreen = ({ navigation, route }) => {
-  const { conversationId, otherUserName, otherUserID, otherUserProfileImage } =
+const ChatScreen = ({navigation, route}) => {
+  const {conversationId, otherUserName, otherUserID, otherUserProfileImage} =
     route?.params;
-  const { auth, chat } = useSelector((state) => state);
+  const {auth, chat} = useSelector(state => state);
   const [sendAudioLoading, setSendAudioLoading] = React.useState(false);
   const userId = auth?.user?.id;
-  const { chatStorage, oldChatPageNo } = chat;
+  const {chatStorage, oldChatPageNo} = chat;
   console.log(
-    "CONVERSATION ______> ID",
+    'CONVERSATION ______> ID',
     conversationId,
-    conversationIdFromSocket?.current
+    conversationIdFromSocket?.current,
   );
   const [triggerScrollToEnd, setTriggerScrollToEnd] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
@@ -1294,7 +1254,7 @@ const ChatScreen = ({ navigation, route }) => {
   const conversationIdFromSocket = useRef(null);
   const dispatch = useDispatch();
 
-  const sendChatMsg = (msg) => {
+  const sendChatMsg = msg => {
     console.log(
       msg,
       {
@@ -1303,16 +1263,16 @@ const ChatScreen = ({ navigation, route }) => {
         msgTo: otherUserID,
         date: Date.now(),
       },
-      "sending msg..."
+      'sending msg...',
     );
     if (msg && userId) {
-      socketRef.current.emit("chat-msg", {
+      socketRef.current.emit('chat-msg', {
         msg: msg,
         sender: userId,
         msgTo: otherUserID,
         date: Date.now(),
       });
-    } else console.log("missing parameter", { msg, userId });
+    } else console.log('missing parameter', {msg, userId});
   };
 
   const hanldeOtherUserTyping = () => {
@@ -1321,80 +1281,80 @@ const ChatScreen = ({ navigation, route }) => {
   };
 
   const listenForMessage = () => {
-    socketRef.current.on("chat-msg", (data) => {
-      console.log("chat:", data);
-      dispatch({ type: ADD_CHAT_STORAGE, payload: data });
-      setTriggerScrollToEnd((state) => !state);
+    socketRef.current.on('chat-msg', data => {
+      console.log('chat:', data);
+      dispatch({type: ADD_CHAT_STORAGE, payload: data});
+      setTriggerScrollToEnd(state => !state);
     });
   };
   const listenForTyping = () => {
-    console.log("listing for tyoing");
-    socketRef.current.on("typing", (event) => {
-      console.log("typing:", event);
+    console.log('listing for tyoing');
+    socketRef.current.on('typing', event => {
+      console.log('typing:', event);
       hanldeOtherUserTyping();
     });
   };
-  const fireTypingEvent = (bool) => {
-    console.log("fireTypingEvent", bool);
+  const fireTypingEvent = bool => {
+    console.log('fireTypingEvent', bool);
     if (bool) {
-      socketRef?.current?.emit("typing");
+      socketRef?.current?.emit('typing');
     }
   };
 
   const handleUnmount = () => {
-    socketRef.current.on("disconnect", () => {
-      console.log("SOCKET DESTROYED");
+    socketRef.current.on('disconnect', () => {
+      console.log('SOCKET DESTROYED');
     });
     socketRef.current.disconnect();
-    dispatch({ type: DESTORY_CHAT_STORAGE });
+    dispatch({type: DESTORY_CHAT_STORAGE});
   };
 
-  const handleGetOldChat = (conversationId) => {
+  const handleGetOldChat = conversationId => {
     dispatch(
       getOldChat({
         authToken: auth?.accessToken,
         conversationID: conversationId,
         pageNo: oldChatPageNo,
         pageSize: 10,
-      })
+      }),
     );
   };
 
-  const handleSendGift = (gift) => {
+  const handleSendGift = gift => {
     const data = {
-      msg: " ",
+      msg: ' ',
       sender: userId,
       msgTo: otherUserID,
       date: Date.now(),
       gift,
     };
-    console.log("send gift data", data);
+    console.log('send gift data', data);
 
     if (gift && userId) {
-      socketRef.current.emit("chat-msg", data);
-    } else console.log("missing parameter", { gift, userId });
+      socketRef.current.emit('chat-msg', data);
+    } else console.log('missing parameter', {gift, userId});
   };
 
-  const handleEmitAudioToChat = (url) => {
+  const handleEmitAudioToChat = url => {
     const data = {
       msgTo: otherUserID,
       roomId: conversationId || conversationIdFromSocket.current,
       date: new Date(),
       attachment: url,
     };
-    console.log("emited", data);
-    socketRef.current.emit("upload-audio", data);
+    console.log('emited', data);
+    socketRef.current.emit('upload-audio', data);
     setFileToSend(null);
   };
-  const handleEmitImageToChat = (url) => {
+  const handleEmitImageToChat = url => {
     const data = {
       msgTo: otherUserID,
       roomId: conversationId || conversationIdFromSocket.current,
       date: new Date(),
       attachment: url,
     };
-    console.log("emited", data);
-    socketRef.current.emit("upload-image", data);
+    console.log('emited', data);
+    socketRef.current.emit('upload-image', data);
     setFileToSend(null);
   };
 
@@ -1406,30 +1366,30 @@ const ChatScreen = ({ navigation, route }) => {
       attachment: url,
       thumbnail: thumbnail,
     };
-    console.log("emited", data);
-    socketRef.current.emit("upload-video", data);
+    console.log('emited', data);
+    socketRef.current.emit('upload-video', data);
     setFileToSend(null);
   };
   // * images
-  const handleFileSend = async (fileObj) => {
-    if (fileObj.type === "video") {
+  const handleFileSend = async fileObj => {
+    if (fileObj.type === 'video') {
       handleFileVideoSend(fileObj);
       return;
     }
     const formData = new FormData();
-    formData.append("attachment", {
+    formData.append('attachment', {
       name: fileObj?.file?.fileName,
       type: fileObj?.file?.type,
       base64: fileObj?.file?.base64,
       uri:
-        Platform.OS === "ios"
-          ? fileObj?.file?.uri.replace("file://", "")
+        Platform.OS === 'ios'
+          ? fileObj?.file?.uri.replace('file://', '')
           : fileObj?.file?.uri,
     });
-    formData.append("filetype", 1);
-    formData.append("msgFrom", auth?.user?.id);
-    formData.append("msgTo", otherUserID);
-    formData.append("roomId", conversationIdFromSocket.current);
+    formData.append('filetype', 1);
+    formData.append('msgFrom', auth?.user?.id);
+    formData.append('msgTo', otherUserID);
+    formData.append('roomId', conversationIdFromSocket.current);
 
     const payload = {
       token: auth?.accessToken,
@@ -1439,31 +1399,31 @@ const ChatScreen = ({ navigation, route }) => {
     setFileSendLoading(true);
     try {
       const res = await api_sendChatAttachments(payload);
-      console.log(res, "res");
+      console.log(res, 'res');
       if (res?.isSuccess) {
         handleEmitImageToChat(`${res?.data?.attachment}`);
       } else {
-        throw new Error(res?.error || "failed to upload file");
+        throw new Error(res?.error || 'failed to upload file');
       }
     } catch (error) {
       console.log(error);
-      Alert.alert("Alert", error?.message);
+      Alert.alert('Alert', error?.message);
     } finally {
       setFileSendLoading(false);
     }
   };
   // * video
-  const handleFileVideoSend = async (fileObj) => {
+  const handleFileVideoSend = async fileObj => {
     const formData = new FormData();
-    formData.append("attachment", {
-      name: "name.mp4",
+    formData.append('attachment', {
+      name: 'name.mp4',
       uri: fileObj?.file?.uri,
-      type: "video/mp4",
+      type: 'video/mp4',
     });
-    formData.append("filetype", 2);
-    formData.append("msgFrom", auth?.user?.id);
-    formData.append("msgTo", otherUserID);
-    formData.append("roomId", conversationIdFromSocket.current);
+    formData.append('filetype', 2);
+    formData.append('msgFrom', auth?.user?.id);
+    formData.append('msgTo', otherUserID);
+    formData.append('roomId', conversationIdFromSocket.current);
 
     const payload = {
       token: auth?.accessToken,
@@ -1473,39 +1433,39 @@ const ChatScreen = ({ navigation, route }) => {
     setFileSendLoading(true);
     try {
       const res = await api_sendChatAttachments(payload);
-      console.log(res, "res");
+      console.log(res, 'res');
       if (res?.isSuccess) {
         const BASE_URL = res?.message;
         const URL = `${BASE_URL}${res?.data?.attachment}`;
         const THUMB_URL = `${BASE_URL}${res?.data?.thumbnail}`;
         handleEmitVideoToChat(URL, THUMB_URL);
       } else {
-        throw new Error(res?.error || "failed to upload file");
+        throw new Error(res?.error || 'failed to upload file');
       }
     } catch (error) {
       console.log(error);
-      Alert.alert("Alert", error?.message);
+      Alert.alert('Alert', error?.message);
     } finally {
       setFileSendLoading(false);
     }
   };
 
   // * audio
-  const handleFileAudioSend = async (fileObj) => {
-    console.log(" IN handleFileAudioSend ", fileObj);
+  const handleFileAudioSend = async fileObj => {
+    console.log(' IN handleFileAudioSend ', fileObj);
     setSendAudioLoading(true);
     const formData = new FormData();
-    formData.append("attachment", {
-      name: "name.mp4",
+    formData.append('attachment', {
+      name: 'name.mp4',
       uri: fileObj?.file?.uri,
-      type: "audio/mp3",
+      type: 'audio/mp3',
     });
-    formData.append("filetype", 3);
-    formData.append("msgFrom", auth?.user?.id);
-    formData.append("msgTo", otherUserID);
+    formData.append('filetype', 3);
+    formData.append('msgFrom', auth?.user?.id);
+    formData.append('msgTo', otherUserID);
     formData.append(
-      "roomId",
-      conversationId || conversationIdFromSocket.current
+      'roomId',
+      conversationId || conversationIdFromSocket.current,
     );
 
     const payload = {
@@ -1516,16 +1476,16 @@ const ChatScreen = ({ navigation, route }) => {
     setFileSendLoading(true);
     try {
       const res = await api_sendChatAttachments(payload);
-      console.log(res, "res");
+      console.log(res, 'res');
       if (res?.isSuccess) {
-        ToastAndroid.show("audio sent!", ToastAndroid.SHORT);
+        ToastAndroid.show('audio sent!', ToastAndroid.SHORT);
         handleEmitAudioToChat(res?.data?.attachment);
       } else {
-        throw new Error(res?.error || "failed to upload file");
+        throw new Error(res?.error || 'failed to upload file');
       }
     } catch (error) {
       console.log(error);
-      ToastAndroid.show(error?.message || "audio failed!", ToastAndroid.SHORT);
+      ToastAndroid.show(error?.message || 'audio failed!', ToastAndroid.SHORT);
       // Alert.alert("Alert", error?.message);
     } finally {
       setSendAudioLoading(false);
@@ -1534,29 +1494,29 @@ const ChatScreen = ({ navigation, route }) => {
   };
 
   const listenForFiles = () => {
-    console.log("In fileListener ");
-    socketRef.current.on("get-image", (data) => {
-      console.log("------IMAGE");
-      console.log("image:", { ...data, fileType: "image" });
+    console.log('In fileListener ');
+    socketRef.current.on('get-image', data => {
+      console.log('------IMAGE');
+      console.log('image:', {...data, fileType: 'image'});
       dispatch({
         type: ADD_CHAT_STORAGE,
-        payload: { ...data, fileType: "image" },
+        payload: {...data, fileType: 'image'},
       });
     });
-    socketRef.current.on("get-video", (data) => {
-      console.log("------VIDEO");
-      console.log("video:", { ...data, fileType: "video" });
+    socketRef.current.on('get-video', data => {
+      console.log('------VIDEO');
+      console.log('video:', {...data, fileType: 'video'});
       dispatch({
         type: ADD_CHAT_STORAGE,
-        payload: { ...data, fileType: "video" },
+        payload: {...data, fileType: 'video'},
       });
     });
-    socketRef.current.on("get-audio", (data) => {
-      console.log("------AUDIO");
-      console.log("audio:", { ...data, fileType: "audio" });
+    socketRef.current.on('get-audio', data => {
+      console.log('------AUDIO');
+      console.log('audio:', {...data, fileType: 'audio'});
       dispatch({
         type: ADD_CHAT_STORAGE,
-        payload: { ...data, fileType: "audio" },
+        payload: {...data, fileType: 'audio'},
       });
     });
   };
@@ -1567,7 +1527,7 @@ const ChatScreen = ({ navigation, route }) => {
     }
 
     socketRef.current = SocketIOClient(SOCKET_URL, {
-      transports: ["websocket"],
+      transports: ['websocket'],
       query: {
         token: auth.accessToken,
       },
@@ -1575,19 +1535,19 @@ const ChatScreen = ({ navigation, route }) => {
 
     console.log(socketRef);
     // socketRef.current.emit('set-user-data', userId);
-    socketRef.current.emit("set-room", {
+    socketRef.current.emit('set-room', {
       conversationFrom: userId,
       conversationTo: otherUserID,
     });
 
-    socketRef.current.on("oops", (err) =>
-      console.log(err, "oooooooooooooooooooooo")
+    socketRef.current.on('oops', err =>
+      console.log(err, 'oooooooooooooooooooooo'),
     );
-    console.log({ socketRef, userId, otherUserID });
+    console.log({socketRef, userId, otherUserID});
 
-    socketRef.current.on("set-room", (room) => {
+    socketRef.current.on('set-room', room => {
       if (!conversationId) {
-        console.log(room, "conversationIdFromSocket");
+        console.log(room, 'conversationIdFromSocket');
         conversationIdFromSocket.current = room;
         handleGetOldChat(room);
       }
@@ -1601,39 +1561,39 @@ const ChatScreen = ({ navigation, route }) => {
     };
   }, []);
 
-  const handldeSheet = (bool) => {
+  const handldeSheet = bool => {
     if (bool) {
-      SheetManager.show("sheetChatScreen");
+      SheetManager.show('sheetChatScreen');
     } else {
       actionSheetRef.current.hide();
     }
   };
-  const handldeSheet2 = (bool) => {
+  const handldeSheet2 = bool => {
     if (bool) {
-      SheetManager.show("sheetUploadFile");
+      SheetManager.show('sheetUploadFile');
     } else {
       actionSheetRef2.current.hide();
     }
   };
 
-  const requestCameraPermission = async (type) => {
+  const requestCameraPermission = async type => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
         {
-          title: "App Camera Permission",
-          message: "App needs access to your camera ",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK",
-        }
+          title: 'App Camera Permission',
+          message: 'App needs access to your camera ',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("Camera permission given");
+        console.log('Camera permission given');
         handleShootFormCamera(type);
         return;
       } else {
-        console.log("Camera permission denied");
+        console.log('Camera permission denied');
       }
       handleShootFormCamera(type);
     } catch (err) {
@@ -1643,39 +1603,38 @@ const ChatScreen = ({ navigation, route }) => {
 
   const handleChooseFormGallary = () => {
     launchImageLibrary({
-      title: "choose file to send",
-      mediaType: "mixed",
+      title: 'choose file to send',
+      mediaType: 'mixed',
       includeBase64: true,
     })
-      .then((res) => {
+      .then(res => {
         const file = res.assets[0];
-        console.log(file, "CHOOSEN");
-        if (file?.type?.includes("video")) {
+        console.log(file, 'CHOOSEN');
+        if (file?.type?.includes('video')) {
           if (file?.duration > 30) {
             Alert.alert(
-              "Alert",
-              "please select video less than or equal to :30sec !"
+              'Alert',
+              'please select video less than or equal to :30sec !',
             );
           } else {
-            setFileToSend({ type: "video", file });
+            setFileToSend({type: 'video', file});
           }
         } else {
-          setFileToSend({ type: "image", file });
+          setFileToSend({type: 'image', file});
         }
       })
-      .catch((err) => console.log(err));
+      .catch(err => console.log(err));
   };
-  const handleShootFormCamera = async (type) => {
-    const fs = RNFetchBlob.fs;
+  const handleShootFormCamera = async type => {
     const res = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.CAMERA
+      PermissionsAndroid.PERMISSIONS.CAMERA,
     )
-      .then((response) => {
+      .then(response => {
         console.log(response);
         return response;
       })
-      .catch((err) => console.log(err));
-    console.log(res, "cm");
+      .catch(err => console.log(err));
+    console.log(res, 'cm');
     if (res) {
       try {
         const res = await launchCamera(
@@ -1684,24 +1643,24 @@ const ChatScreen = ({ navigation, route }) => {
             includeBase64: true,
             durationLimit: 30,
           },
-          (response) => {
-            console.log("Response = ", response);
+          response => {
+            console.log('Response = ', response);
             if (response.didCancel) {
-              console.log("User cancelled video shoot ");
+              console.log('User cancelled video shoot ');
             } else if (response.error) {
-              console.log("ImagePicker Error: ", response.error);
+              console.log('ImagePicker Error: ', response.error);
             } else if (response.customButton) {
-              console.log("User tapped custom button: ", response.customButton);
+              console.log('User tapped custom button: ', response.customButton);
               Alert.alert(response.customButton);
             } else {
-              if (type === "photo") {
-                setFileToSend({ file: response?.assets[0], type: "image" });
+              if (type === 'photo') {
+                setFileToSend({file: response?.assets[0], type: 'image'});
               } else {
-                setFileToSend({ file: response?.assets[0], type: "video" });
+                setFileToSend({file: response?.assets[0], type: 'video'});
               }
-              console.log("response", JSON.stringify(response));
+              console.log('response', JSON.stringify(response));
             }
-          }
+          },
         );
       } catch (error) {
         console.log(error);
@@ -1712,7 +1671,7 @@ const ChatScreen = ({ navigation, route }) => {
   };
 
   const handleBlockPerson = async () => {
-    console.log("REMOVE TEST");
+    console.log('REMOVE TEST');
 
     const bodyData = {
       toUser: otherUserID,
@@ -1723,40 +1682,40 @@ const ChatScreen = ({ navigation, route }) => {
         bodyData,
         authToken: auth.accessToken,
       });
-      console.log({ response });
+      console.log({response});
       if (response.isSuccess && response.statusCode === 200) {
-        Alert.alert("Alert", response?.message || "Blocked!");
+        Alert.alert('Alert', response?.message || 'Blocked!');
       } else {
-        throw new Error(response?.error || "something went wrong!");
+        throw new Error(response?.error || 'something went wrong!');
       }
     } catch (error) {
-      Alert.alert("Alert", error?.message);
+      Alert.alert('Alert', error?.message);
     }
   };
 
   const hanldeBlockUser = () => {
-    Alert.alert("Block?", "are you sure to block this person", [
+    Alert.alert('Block?', 'are you sure to block this person', [
       {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
       },
       {
-        text: "Block",
+        text: 'Block',
         onPress: () => handleBlockPerson(),
       },
     ]);
   };
 
-  const handleReportUserSheet = (bool) => {
+  const handleReportUserSheet = bool => {
     if (bool) {
-      SheetManager.show("sheetReportUser2");
+      SheetManager.show('sheetReportUser2');
     } else {
       sheetReportUserRef2.current.hide();
     }
   };
 
-  const handleReportPress = async (text) => {
+  const handleReportPress = async text => {
     setReportLoading(true);
     try {
       const payload = {
@@ -1769,33 +1728,32 @@ const ChatScreen = ({ navigation, route }) => {
       const res = await api_userReport(payload);
       console.log(res);
       if (res?.isSuccess) {
-        Alert.alert("Alert", "Your report is submitted!");
+        Alert.alert('Alert', 'Your report is submitted!');
       } else {
-        throw new Error(res?.error || "failed to report!");
+        throw new Error(res?.error || 'failed to report!');
       }
     } catch (error) {
-      Alert.alert("Alert", error?.message);
+      Alert.alert('Alert', error?.message);
     } finally {
       setReportLoading(false);
     }
   };
 
   return (
-    <View style={{ flex: 1, marginBottom: 5 }}>
+    <View style={{flex: 1, marginBottom: 5}}>
       {reportLoading && (
         <MyLoader
-          style={{ position: "absolute" }}
+          style={{position: 'absolute'}}
           visible={true}
-          text={"Reporting..."}
+          text={'Reporting...'}
         />
       )}
       {isReportVisible && (
         <View
           style={{
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
           <ReportUser
             isReportVisible={isReportVisible}
             setIsReportVisible={setIsReportVisible}
@@ -1851,23 +1809,20 @@ const ChatScreen = ({ navigation, route }) => {
         <View
           style={{
             height: 100,
-          }}
-        >
+          }}>
           <TouchableOpacity
             onPress={() => {
               hanldeBlockUser();
               handldeSheet(false);
-            }}
-          >
+            }}>
             <Text
               style={{
-                textAlign: "center",
+                textAlign: 'center',
                 fontSize: 16,
                 padding: 10,
                 borderBottomWidth: 1,
-                borderColor: "rgba(0,0,0,0.2)",
-              }}
-            >
+                borderColor: 'rgba(0,0,0,0.2)',
+              }}>
               Block
             </Text>
           </TouchableOpacity>
@@ -1876,17 +1831,15 @@ const ChatScreen = ({ navigation, route }) => {
               // setIsReportVisible(true);
               handleReportUserSheet(true);
               handldeSheet(false);
-            }}
-          >
+            }}>
             <Text
               style={{
-                textAlign: "center",
+                textAlign: 'center',
                 fontSize: 16,
                 padding: 10,
                 borderBottomWidth: 1,
-                borderColor: "rgba(0,0,0,0.2)",
-              }}
-            >
+                borderColor: 'rgba(0,0,0,0.2)',
+              }}>
               Report
             </Text>
           </TouchableOpacity>
@@ -1895,12 +1848,11 @@ const ChatScreen = ({ navigation, route }) => {
         <TouchableOpacity onPress={() => handldeSheet(false)}>
           <Text
             style={{
-              textAlign: "center",
+              textAlign: 'center',
               fontSize: 18,
               padding: 10,
-              fontWeight: "bold",
-            }}
-          >
+              fontWeight: 'bold',
+            }}>
             Close
           </Text>
         </TouchableOpacity>
@@ -1909,41 +1861,36 @@ const ChatScreen = ({ navigation, route }) => {
         <View
           style={{
             height: 130,
-          }}
-        >
+          }}>
           <TouchableOpacity
             onPress={() => {
-              handleShootFormCamera("photo");
+              handleShootFormCamera('photo');
               handldeSheet2(false);
-            }}
-          >
+            }}>
             <Text
               style={{
-                textAlign: "center",
+                textAlign: 'center',
                 fontSize: 16,
                 padding: 10,
                 borderBottomWidth: 1,
-                borderColor: "rgba(0,0,0,0.2)",
-              }}
-            >
+                borderColor: 'rgba(0,0,0,0.2)',
+              }}>
               Open Photo Camera
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              handleShootFormCamera("video");
+              handleShootFormCamera('video');
               handldeSheet2(false);
-            }}
-          >
+            }}>
             <Text
               style={{
-                textAlign: "center",
+                textAlign: 'center',
                 fontSize: 16,
                 padding: 10,
                 borderBottomWidth: 1,
-                borderColor: "rgba(0,0,0,0.2)",
-              }}
-            >
+                borderColor: 'rgba(0,0,0,0.2)',
+              }}>
               Open Video Camera
             </Text>
           </TouchableOpacity>
@@ -1951,17 +1898,15 @@ const ChatScreen = ({ navigation, route }) => {
             onPress={() => {
               handleChooseFormGallary();
               handldeSheet2(false);
-            }}
-          >
+            }}>
             <Text
               style={{
-                textAlign: "center",
+                textAlign: 'center',
                 fontSize: 16,
                 padding: 10,
                 borderBottomWidth: 1,
-                borderColor: "rgba(0,0,0,0.2)",
-              }}
-            >
+                borderColor: 'rgba(0,0,0,0.2)',
+              }}>
               Choose Form Gallary
             </Text>
           </TouchableOpacity>
@@ -1970,12 +1915,11 @@ const ChatScreen = ({ navigation, route }) => {
         <TouchableOpacity onPress={() => handldeSheet2(false)}>
           <Text
             style={{
-              textAlign: "center",
+              textAlign: 'center',
               fontSize: 18,
               padding: 10,
-              fontWeight: "bold",
-            }}
-          >
+              fontWeight: 'bold',
+            }}>
             Close
           </Text>
         </TouchableOpacity>
@@ -1985,34 +1929,30 @@ const ChatScreen = ({ navigation, route }) => {
         <View
           style={{
             height: 340,
-          }}
-        >
-          {REPORT_DATA.map((item) => {
+          }}>
+          {REPORT_DATA.map(item => {
             return (
               <TouchableOpacity
                 key={item?.title}
                 onPress={() => {
                   handleReportPress(item?.title);
                   handleReportUserSheet(false);
-                }}
-              >
+                }}>
                 <View
                   style={{
-                    flexDirection: "row",
+                    flexDirection: 'row',
                     borderBottomWidth: 1,
-                    borderColor: "rgba(0,0,0,0.2)",
-                    alignItems: "center",
-                  }}
-                >
+                    borderColor: 'rgba(0,0,0,0.2)',
+                    alignItems: 'center',
+                  }}>
                   <View
                     style={{
                       width: 25,
                       height: 25,
-                      justifyContent: "center",
-                      alignItems: "center",
+                      justifyContent: 'center',
+                      alignItems: 'center',
                       marginHorizontal: 15,
-                    }}
-                  >
+                    }}>
                     <AntDesign
                       name={item?.icon}
                       size={20}
@@ -2021,11 +1961,10 @@ const ChatScreen = ({ navigation, route }) => {
                   </View>
                   <Text
                     style={{
-                      textAlign: "left",
+                      textAlign: 'left',
                       fontSize: 16,
                       padding: 12,
-                    }}
-                  >
+                    }}>
                     {item?.title}
                   </Text>
                 </View>
@@ -2037,12 +1976,11 @@ const ChatScreen = ({ navigation, route }) => {
         <TouchableOpacity onPress={() => handleReportUserSheet(false)}>
           <Text
             style={{
-              textAlign: "center",
+              textAlign: 'center',
               fontSize: 18,
               padding: 10,
-              fontWeight: "bold",
-            }}
-          >
+              fontWeight: 'bold',
+            }}>
             Close
           </Text>
         </TouchableOpacity>

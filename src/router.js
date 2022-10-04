@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from "react";
-import LoginScreen from "./screens/login/LoginScreen";
-import SignUp from "./screens/signup/SignUp";
-import SplashScreen from "./screens/splash/SplashScreen";
+import React, {useEffect, useState} from 'react';
+import LoginScreen from './screens/login/LoginScreen';
+import SignUp from './screens/signup/SignUp';
+import SplashScreen from './screens/splash/SplashScreen';
 
-import SignUpTwo from "./screens/signup/SignUpTwo";
-import { NavigationContainer } from "@react-navigation/native";
-import Verification from "./screens/signup/Verification";
-import { createStackNavigator } from "@react-navigation/stack";
-import Main from "./screens/main/Main";
-import { useSelector } from "react-redux";
-import ViewOtherProfile from "./screens/profile/ViewOtherProfile";
-import ChatScreen from "./screens/inbox/chat/ChatScreen";
-import LiveVideoCall from "./screens/video_call/LiveVideoCall";
-import CallIncoming from "./screens/video_call/CallIncoming";
-import SubmitBankDetails from "./screens/extra/SubmitBankDetails";
-import requestUserPermission from "./utils/notificationServices";
-import ForgetPassword from "./screens/recover/ForgetPassword";
-import CreateNewPassword from "./screens/recover/CreateNewPassword";
-import VerifyYourEmail from "./screens/recover/VerifyYourEmail";
-import TermAndConditions from "./screens/settings/TermAndConditions";
+import SignUpTwo from './screens/signup/SignUpTwo';
+import {NavigationContainer} from '@react-navigation/native';
+import Verification from './screens/signup/Verification';
+import {createStackNavigator} from '@react-navigation/stack';
+import Main from './screens/main/Main';
+import {useSelector} from 'react-redux';
+import ViewOtherProfile from './screens/profile/ViewOtherProfile';
+import ChatScreen from './screens/inbox/chat/ChatScreen';
+import LiveVideoCall from './screens/video_call/LiveVideoCall';
+import CallIncoming from './screens/video_call/CallIncoming';
+import SubmitBankDetails from './screens/extra/SubmitBankDetails';
+import requestUserPermission from './utils/notificationServices';
+import ForgetPassword from './screens/recover/ForgetPassword';
+import CreateNewPassword from './screens/recover/CreateNewPassword';
+import VerifyYourEmail from './screens/recover/VerifyYourEmail';
+import TermAndConditions from './screens/settings/TermAndConditions';
 import {
   UsernameScreen,
   PasswordScreen,
@@ -26,18 +26,18 @@ import {
   EmailScreen,
   AvatarScreen,
   GenderScreen,
-} from "./screens/multi_signup";
+} from './screens/multi_signup';
 
-import ScrollablePhotos from "./screens/profile/gallary/ScrollablePhotos";
-import ScrollableVideos from "./screens/profile/gallary/ScrollableVideos";
-import Test from "./screens/Test";
-import PayPalMeScreen from "./screens/shop/PayPalMeScreen";
+import ScrollablePhotos from './screens/profile/gallary/ScrollablePhotos';
+import ScrollableVideos from './screens/profile/gallary/ScrollableVideos';
+
+import PayPalMeScreen from './screens/shop/PayPalMeScreen';
 const Stack = createStackNavigator();
 const Routes = () => {
   const [isSplashActive, setIsSplashActive] = useState(true);
 
-  const { user } = useSelector((state) => state.auth);
-  console.log(user, "form root");
+  const {user} = useSelector(state => state.auth);
+  console.log(user, 'form root');
 
   useEffect(() => {
     requestUserPermission();
@@ -47,19 +47,17 @@ const Routes = () => {
       initialRouteName="Splash"
       screenOptions={{
         unmountOnBlur: true,
-      }}
-    >
+      }}>
       <Stack.Navigator
         name="Root"
         screenOptions={{
           headerShown: false,
-        }}
-      >
+        }}>
         {isSplashActive && (
           <Stack.Screen
             name="Splash"
             component={SplashScreen}
-            initialParams={{ setIsSplashActive: setIsSplashActive }}
+            initialParams={{setIsSplashActive: setIsSplashActive}}
           />
         )}
         {/* NEW SIGN UP START */}
@@ -73,7 +71,6 @@ const Routes = () => {
         </Stack.Group>
         {/* NEW SIGN UP END */}
 
-        <Stack.Screen name="Test" component={Test} />
         <Stack.Group>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SignUpTwo" component={SignUpTwo} />
