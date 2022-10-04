@@ -1,4 +1,4 @@
-package com.amber;
+package com.app.amberclub;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
