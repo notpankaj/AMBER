@@ -258,6 +258,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-agora')
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
 
     //noinspection GradleDynamicVersion

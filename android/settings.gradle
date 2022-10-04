@@ -10,4 +10,6 @@ if (settings.hasProperty("newArchEnabled") && settings.newArchEnabled == "true")
     project(":ReactAndroid:hermes-engine").projectDir = file('../node_modules/react-native/ReactAndroid/hermes-engine')
 }
 
+include ':react-native-agora'
+project(':react-native-agora').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-agora/android')
 
