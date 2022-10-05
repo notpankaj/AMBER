@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { GOOGLE_WEB_CLIENT_ID, isTestMode } from "../../constants";
+import React, {useEffect, useState} from 'react';
+import {GOOGLE_WEB_CLIENT_ID, isTestMode} from '../../constants';
 import {
   View,
   Text,
@@ -14,8 +14,8 @@ import {
   ActivityIndicator,
   ActivityIndicatorBase,
   Platform,
-} from "react-native";
-import LinearGradient from "react-native-linear-gradient";
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 // import { SignInWithAppleButton } from "react-native-apple-authentication";
 
@@ -26,48 +26,48 @@ import LinearGradient from "react-native-linear-gradient";
 // } from '@invertase/react-native-apple-authentication';
 // import { AppleButton } from "@invertase/react-native-apple-authentication";
 
-import globalStyles from "../../styles/globalStyles";
-import * as yup from "yup";
-import { Formik } from "formik";
-import { api_login, api_socialLogin, DEV_MODE } from "../../api_services";
-import Toast from "react-native-toast-message";
-import { login } from "../../redux/actions/auth.action";
-import { useDispatch, useSelector } from "react-redux";
+import globalStyles from '../../styles/globalStyles';
+import * as yup from 'yup';
+import {Formik} from 'formik';
+import {api_login, api_socialLogin, DEV_MODE} from '../../api_services';
+import Toast from 'react-native-toast-message';
+import {login} from '../../redux/actions/auth.action';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   LOGIN_REFRESH,
   LOGIN_SUCCESS,
   SET_FOLLOWER_COUNT,
   SET_FOLLOWING_COUNT,
   SET_USER_COORDS,
-} from "../../redux/reducers/actionTypes";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
+} from '../../redux/reducers/actionTypes';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import auth from "@react-native-firebase/auth";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+// import auth from "@react-native-firebase/auth";
 
 import {
   AccessToken,
   LoginManager,
   GraphRequest,
   GraphRequestManager,
-} from "react-native-fbsdk-next";
-import Geolocation from "@react-native-community/geolocation";
+} from 'react-native-fbsdk-next';
+import Geolocation from '@react-native-community/geolocation';
 
-import CheckBox from "@react-native-community/checkbox";
+import CheckBox from '@react-native-community/checkbox';
 
-var appleFirstname = "";
-var appleSecondName = "";
-var appleSocialId = "";
+var appleFirstname = '';
+var appleSecondName = '';
+var appleSocialId = '';
 
 const loginValidationSchema = yup.object().shape({
   username: yup
     .string()
-    .min(4, ({ min }) => `Username must be atleast ${min} character`)
-    .required("username is required!"),
+    .min(4, ({min}) => `Username must be atleast ${min} character`)
+    .required('username is required!'),
   password: yup
     .string()
-    .min(8, ({ min }) => `Password must be atleast ${min} character`)
-    .required("Password is required!"),
+    .min(8, ({min}) => `Password must be atleast ${min} character`)
+    .required('Password is required!'),
 });
 
 // // uncomment later
@@ -85,15 +85,15 @@ const loginValidationSchema = yup.object().shape({
 //   }
 // }
 // // uncomment later
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({navigation}) => {
   const [socialGoogleLoading, setSocialGoogleLoading] = React.useState(false);
   const [socialFbLoading, setSocialFbLoading] = React.useState(false);
   const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
   const [socialSnapLoading, setSocialSnapLoading] = React.useState(false);
 
   const dispatch = useDispatch();
-  const { loading, error, user } = useSelector((state) => state.auth);
-  const handleToast = (type = "success", text1 = "Success", text2 = "") => {
+  const {loading, error, user} = useSelector(state => state.auth);
+  const handleToast = (type = 'success', text1 = 'Success', text2 = '') => {
     Toast.show({
       type,
       text1,
@@ -101,80 +101,80 @@ const LoginScreen = ({ navigation }) => {
     });
   };
 
-  console.log({ toggleCheckBox });
+  console.log({toggleCheckBox});
 
   function onAuthStateChanged(user) {
-    console.log("oAuth user", user);
+    console.log('oAuth user', user);
   }
   setSocialFbLoading;
 
-  const populateFollowCounts = (user) => {
+  const populateFollowCounts = user => {
     if (!user) return;
-    const { followerCount, followingCount } = user;
-    Alert.alert("", JSON.stringify({ followerCount, followingCount }));
+    const {followerCount, followingCount} = user;
+    Alert.alert('', JSON.stringify({followerCount, followingCount}));
     if (followerCount) {
-      dispatch({ type: SET_FOLLOWER_COUNT, payload: { count: followerCount } });
+      dispatch({type: SET_FOLLOWER_COUNT, payload: {count: followerCount}});
     }
 
     if (followingCount) {
       dispatch({
         type: SET_FOLLOWING_COUNT,
-        payload: { count: followingCount },
+        payload: {count: followingCount},
       });
     }
   };
 
   useEffect(() => {
     if (error) {
-      handleToast("error", "error", error);
+      handleToast('error', 'error', error);
       dispatch({
         type: LOGIN_REFRESH,
       });
     }
     if (user) {
-      navigation.navigate("Main", { screen: "Home" });
+      navigation.navigate('Main', {screen: 'Home'});
       // populateFollowCounts(user);
-      handleToast("success", "success", "Login success!");
+      handleToast('success', 'success', 'Login success!');
     }
   }, [error, loading]);
 
   useEffect(() => {
     if (user) {
-      navigation.navigate("Main", { screen: "Home" });
+      navigation.navigate('Main', {screen: 'Home'});
     }
   }, []);
 
-  const handleLogin = async (payload) => {
+  const handleLogin = async payload => {
     // if (!toggleCheckBox) {
     //   Alert.alert('Alert', 'please agree with term & conditions ');
     //   return;
     // }
 
-    if (Platform.OS === "ios") {
-      dispatch(login({ ...payload, deviceToken: fcmToken }));
+    if (Platform.OS === 'ios') {
+      dispatch(login({...payload, deviceToken: fcmToken}));
       return;
     }
 
-    let fcmToken = await AsyncStorage.getItem("fcmToken");
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
     if (fcmToken) {
-      dispatch(login({ ...payload, deviceToken: fcmToken }));
+      dispatch(login({...payload, deviceToken: fcmToken}));
     } else {
       Alert.alert(
-        "Alert",
-        "Authentication Failed!! , because your device failed to generate device token"
+        'Alert',
+        'Authentication Failed!! , because your device failed to generate device token',
       );
     }
   };
 
   const getLocation = async () => {
-    console.log("GETTING USER LOCATION");
+    console.log('GETTING USER LOCATION');
     try {
       Geolocation.getCurrentPosition(
-        (position) => {
-          console.log({ position });
-          console.log("longitude", position.coords.longitude);
-          console.log("latitude", position.coords.latitude);
-          const { longitude, latitude } = position.coords;
+        position => {
+          console.log({position});
+          console.log('longitude', position.coords.longitude);
+          console.log('latitude', position.coords.latitude);
+          const {longitude, latitude} = position.coords;
           dispatch({
             type: SET_USER_COORDS,
             payload: {
@@ -184,45 +184,45 @@ const LoginScreen = ({ navigation }) => {
             },
           });
         },
-        (err) => {
+        err => {
           Alert.alert(
-            "Permission Fail",
-            `${err?.message} , make sure to enable loaction and reload app`
+            'Permission Fail',
+            `${err?.message} , make sure to enable loaction and reload app`,
           );
-        }
+        },
       );
     } catch (err) {
-      console.log({ err });
+      console.log({err});
     }
   };
 
   const checkLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.check(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       );
       if (granted) {
         getLocation();
       } else {
         // request permission
         PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         )
-          .then((res) => {
+          .then(res => {
             console.log(res);
-            if (res === "denied") {
-              Alert.alert("Failed", "Failed to get location due to permission");
+            if (res === 'denied') {
+              Alert.alert('Failed', 'Failed to get location due to permission');
             }
-            if (res === "granted") {
+            if (res === 'granted') {
               getLocation();
             }
           })
-          .catch((err) => {
-            console.log(err, "decline");
+          .catch(err => {
+            console.log(err, 'decline');
           });
       }
     } catch (err) {
-      console.log(err, "oooo");
+      console.log(err, 'oooo');
     }
   };
 
@@ -234,20 +234,20 @@ const LoginScreen = ({ navigation }) => {
     return subscriber; // unsubscribe on unmount
   }, []);
 
-  const hitSocialLogin = async (payload) => {
+  const hitSocialLogin = async payload => {
     try {
-      console.log("API LOGIN");
+      console.log('API LOGIN');
       const response = await api_socialLogin(payload);
       console.log(response);
       if (response.isSuccess) {
-        dispatch({ type: LOGIN_SUCCESS, payload: response.data });
-        navigation.navigate("Main");
-        Alert.alert("success", "success");
+        dispatch({type: LOGIN_SUCCESS, payload: response.data});
+        navigation.navigate('Main');
+        Alert.alert('success', 'success');
       } else {
-        Alert.alert("error", response?.error || "failed to signin");
+        Alert.alert('error', response?.error || 'failed to signin');
       }
     } catch (error) {
-      Alert.alert("error", error?.message || "failed to signin");
+      Alert.alert('error', error?.message || 'failed to signin');
     } finally {
       setSocialGoogleLoading(false);
       setSocialFbLoading(false);
@@ -265,26 +265,26 @@ const LoginScreen = ({ navigation }) => {
   const doSocialLogin = async (data, mediaType) => {
     let fcmToken;
     try {
-      fcmToken = await AsyncStorage.getItem("fcmToken");
+      fcmToken = await AsyncStorage.getItem('fcmToken');
     } catch (err) {
       console.log(err);
     }
     // console.log({ data }, mediaType)
-    if (mediaType === "facebook") {
+    if (mediaType === 'facebook') {
       const payload = {
         socialLoginId: data?.id,
-        platform: "facebook",
+        platform: 'facebook',
         firstName: data.first_name,
         lastName: data.name,
-        gender: "male",
+        gender: 'male',
         deviceToken: fcmToken,
       };
       hitSocialLogin(payload);
     }
-    if (mediaType === "google") {
+    if (mediaType === 'google') {
       const payload = {
         socialLoginId: data?.user?.id,
-        platform: "google",
+        platform: 'google',
         firstName: data?.user?.name,
         lastName: data?.user?.name,
         gender: data?.gender,
@@ -305,27 +305,27 @@ const LoginScreen = ({ navigation }) => {
     // }
   };
 
-  const getInfoFromToken = (token) => {
+  const getInfoFromToken = token => {
     const PROFILE_REQUEST_PARAMS = {
       fields: {
-        string: "id, name,  first_name, last_name, gender",
+        string: 'id, name,  first_name, last_name, gender',
       },
     };
     const profileRequest = new GraphRequest(
-      "/me",
-      { token, parameters: PROFILE_REQUEST_PARAMS },
+      '/me',
+      {token, parameters: PROFILE_REQUEST_PARAMS},
       (error, result) => {
         if (error) {
-          console.log("login info has error: " + error);
-          Alert.alert("error", error?.message || "failed to login");
+          console.log('login info has error: ' + error);
+          Alert.alert('error', error?.message || 'failed to login');
           setSocialFbLoading(false);
         } else {
-          console.log("result:", result);
-          doSocialLogin({ ...result, token }, "facebook");
+          console.log('result:', result);
+          doSocialLogin({...result, token}, 'facebook');
         }
-      }
+      },
     );
-    console.log({ profileRequest });
+    console.log({profileRequest});
     new GraphRequestManager().addRequest(profileRequest).start();
   };
 
@@ -333,89 +333,86 @@ const LoginScreen = ({ navigation }) => {
     setSocialGoogleLoading(true);
     GoogleSignin.configure({
       scopes: [
-        "https://www.googleapis.com/auth/user.gender.read",
-        "https://www.googleapis.com/auth/userinfo.profile",
-        "https://www.googleapis.com/auth/user.birthday.read",
+        'https://www.googleapis.com/auth/user.gender.read',
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/user.birthday.read',
       ],
       webClientId:
-        "58873969543-j5tkuqrc3hekmdmfm5u807ggmnjuus0v.apps.googleusercontent.com",
+        '58873969543-j5tkuqrc3hekmdmfm5u807ggmnjuus0v.apps.googleusercontent.com',
       client_type: 3,
     });
 
     try {
       const user = await GoogleSignin.signIn();
-      console.log({ user });
+      console.log({user});
       if (user) {
         // get extra data start
         try {
-          const { accessToken } = await GoogleSignin.getTokens();
+          const {accessToken} = await GoogleSignin.getTokens();
           fetch(
             `https://people.googleapis.com/v1/people/${user.user.id}?personFields=genders`,
             {
-              method: "GET",
+              method: 'GET',
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
-            }
+            },
           )
-            .then((res) => res.json())
-            .then((res) => {
+            .then(res => res.json())
+            .then(res => {
               console.log(res);
-              doSocialLogin(
-                { ...user, gender: res.genders[0].value },
-                "google"
-              );
+              doSocialLogin({...user, gender: res.genders[0].value}, 'google');
             })
-            .catch((err) => {
+            .catch(err => {
               setSocialGoogleLoading(false);
               console.log(err);
-              Alert.alert("error", "failed to login");
+              Alert.alert('error', 'failed to login');
             });
         } catch (err) {
           setSocialGoogleLoading(false);
           console.log(err);
-          Alert.alert("error", "failed to login");
+          Alert.alert('error', 'failed to login');
         }
         // get extra data end
       } else {
         setSocialGoogleLoading(false);
-        Alert.alert("error", "failed to login");
+        Alert.alert('error', 'failed to login');
       }
     } catch (err) {
-      console.log(err, "7878");
+      console.log(err, '7878');
       setSocialGoogleLoading(false);
-      Alert.alert("error", "failed to login");
+      Alert.alert('error', 'failed to login');
     }
   };
   const handleFBLoginPress = async () => {
     setSocialFbLoading(true);
-    LoginManager.setLoginBehavior("web_only");
+    LoginManager.setLoginBehavior('web_only');
     try {
       const result = await LoginManager.logInWithPermissions([
-        "public_profile",
-        "email",
-        "user_friends",
-        "user_gender",
+        'public_profile',
+        'email',
+        'user_friends',
+        'user_gender',
       ]);
-      console.log({ result });
+      console.log({result});
       if (result.isCancelled) {
-        throw "User cancelled the login process";
+        throw 'User cancelled the login process';
       }
 
       try {
         const data = await AccessToken.getCurrentAccessToken();
-        console.log({ data });
+        console.log({data});
         if (!data) {
-          throw "Something went wrong obtaining access token";
+          throw 'Something went wrong obtaining access token';
         }
         getInfoFromToken(data.accessToken);
       } catch (err) {
-        Alert.alert("error", err?.message || "failed to login");
+        Alert.alert('error', err?.message || 'failed to login');
         setSocialFbLoading(false);
       }
     } catch (error) {
-      console.log({ error });
-      Alert.alert("error", error?.message || "failed to login");
+      console.log({error});
+      Alert.alert('error', error?.message || 'failed to login');
       setSocialFbLoading(false);
     }
   };
@@ -423,14 +420,13 @@ const LoginScreen = ({ navigation }) => {
   return (
     <Formik
       initialValues={{
-        email: "",
-        username: DEV_MODE.STATUS ? DEV_MODE.UN : "",
-        password: DEV_MODE.STATUS ? DEV_MODE.PW : "",
+        email: '',
+        username: DEV_MODE.STATUS ? DEV_MODE.UN : '',
+        password: DEV_MODE.STATUS ? DEV_MODE.PW : '',
       }}
       validateOnMount={true}
       validationSchema={loginValidationSchema}
-      onSubmit={(values) => handleLogin(values)}
-    >
+      onSubmit={values => handleLogin(values)}>
       {({
         handleChange,
         handleBlur,
@@ -445,8 +441,8 @@ const LoginScreen = ({ navigation }) => {
             {/* image */}
             <View style={styles.logoBox}>
               <Image
-                style={{ ...styles.logo, padding: 20 }}
-                source={require("../../assets/icons/logo.png")}
+                style={{...styles.logo, padding: 20}}
+                source={require('../../assets/icons/logo.png')}
                 width={120}
                 height={120}
               />
@@ -472,10 +468,10 @@ const LoginScreen = ({ navigation }) => {
                 placeholder="Username"
                 placeholderTextColor="rgba(0,0,0,0.4)"
                 // onChangeText={(value) => setUsername(value)}
-                onChangeText={handleChange("username")}
+                onChangeText={handleChange('username')}
                 // value={username}
                 value={values.username}
-                onBlur={handleBlur("username")}
+                onBlur={handleBlur('username')}
               />
               {errors.username && touched.username && (
                 <Text style={globalStyles.inputError}>{errors.username}</Text>
@@ -487,8 +483,8 @@ const LoginScreen = ({ navigation }) => {
                 // value={password}
                 placeholder="Password"
                 placeholderTextColor="rgba(0,0,0,0.4)"
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
                 value={values.password}
               />
               {errors.password && touched.password && (
@@ -519,12 +515,11 @@ const LoginScreen = ({ navigation }) => {
               </View> */}
               {/* button start */}
               <LinearGradient
-                start={{ x: 0.0, y: 0.3 }}
-                end={{ x: 0.6, y: 1.0 }}
+                start={{x: 0.0, y: 0.3}}
+                end={{x: 0.6, y: 1.0}}
                 locations={[0.4, 1]}
-                colors={["#f46f69", "#f8c748"]}
-                style={styles.loginBtn.box}
-              >
+                colors={['#f46f69', '#f8c748']}
+                style={styles.loginBtn.box}>
                 <TouchableOpacity onPress={handleSubmit}>
                   {loading ? (
                     <ActivityIndicator size="small" color="#fff" />
@@ -543,11 +538,10 @@ const LoginScreen = ({ navigation }) => {
 
               <View style={styles.loginFormExtra.box}>
                 <View style={styles.loginFormExtra.textRow}>
-                  <Text style={{ color: "#000" }}>
+                  <Text style={{color: '#000'}}>
                     Forgot Your Password?
                     <TouchableOpacity
-                      onPress={() => navigation.navigate("ForgetPassword")}
-                    >
+                      onPress={() => navigation.navigate('ForgetPassword')}>
                       <Text style={styles.loginFormExtra.secondaryColor}>
                         Get help signing in
                       </Text>
@@ -560,10 +554,9 @@ const LoginScreen = ({ navigation }) => {
                     <Text
                       onPress={() => {
                         // navigation.navigate('SignUp');
-                        navigation.navigate("SignUpUsername");
+                        navigation.navigate('SignUpUsername');
                       }}
-                      style={styles.loginFormExtra.secondaryColor}
-                    >
+                      style={styles.loginFormExtra.secondaryColor}>
                       Sign up
                     </Text>
                     now!
@@ -595,22 +588,20 @@ const LoginScreen = ({ navigation }) => {
               </TouchableOpacity> */}
               {/* google */}
               <TouchableOpacity
-                style={socialGoogleLoading ? { height: 30 } : {}}
-                onPress={handleGoogleLoginPress}
-              >
+                style={socialGoogleLoading ? {height: 30} : {}}
+                onPress={handleGoogleLoginPress}>
                 {socialGoogleLoading ? (
                   <ActivityIndicator size="small" />
                 ) : (
                   <View style={styles.socialLogin.btn}>
                     <View style={styles.socialLogin.iconBox}>
                       <Image
-                        source={require("../../assets/icons/google.png")}
-                        style={{ height: 30, width: 30 }}
+                        source={require('../../assets/icons/google.png')}
+                        style={{height: 30, width: 30}}
                       />
                     </View>
                     <Text
-                      style={{ ...styles.socialLogin.btnText, color: "#000" }}
-                    >
+                      style={{...styles.socialLogin.btnText, color: '#000'}}>
                       Login with Google
                     </Text>
                   </View>
@@ -619,43 +610,38 @@ const LoginScreen = ({ navigation }) => {
 
               {/* facebook */}
               <LinearGradient
-                start={{ x: 0.0, y: 1 }}
-                end={{ x: 0.8, y: 1.0 }}
+                start={{x: 0.0, y: 1}}
+                end={{x: 0.8, y: 1.0}}
                 locations={[0.1, 1]}
-                colors={["#49b8fc", "#335fff"]}
-                style={[styles.socialLogin.facebookBG]}
-              >
+                colors={['#49b8fc', '#335fff']}
+                style={[styles.socialLogin.facebookBG]}>
                 {socialFbLoading ? (
                   <View
                     style={{
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: "100%",
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '100%',
                       height: 30,
-                    }}
-                  >
+                    }}>
                     <ActivityIndicator size="small" color="white" />
                   </View>
                 ) : (
                   <TouchableOpacity
-                    style={{ height: 30 }}
-                    onPress={handleFBLoginPress}
-                  >
+                    style={{height: 30}}
+                    onPress={handleFBLoginPress}>
                     <View
                       style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
                       <View style={styles.socialLogin.iconBox}>
                         <Image
-                          source={require("../../assets/icons/facebook.png")}
-                          style={{ height: 30, width: 30 }}
+                          source={require('../../assets/icons/facebook.png')}
+                          style={{height: 30, width: 30}}
                         />
                       </View>
                       <Text
-                        style={{ ...styles.socialLogin.btnText, color: "#fff" }}
-                      >
+                        style={{...styles.socialLogin.btnText, color: '#fff'}}>
                         Login with Facebook
                       </Text>
                     </View>
@@ -664,14 +650,13 @@ const LoginScreen = ({ navigation }) => {
               </LinearGradient>
             </View>
 
-            {Platform.OS === "ios" && (
+            {Platform.OS === 'ios' && (
               <View
                 style={{
-                  marginTop: "auto",
+                  marginTop: 'auto',
                   marginBottom: 15,
-                  alignItems: "center",
-                }}
-              >
+                  alignItems: 'center',
+                }}>
                 <View>
                   {/* {SignInWithAppleButton({
                     buttonStyle: styles.appleBtn,
@@ -697,79 +682,79 @@ const styles = StyleSheet.create({
   },
   logoBox: {
     marginTop: 50,
-    alignItems: "center",
+    alignItems: 'center',
   },
   logo: {
     // backgroundColor: 'red',
   },
   loginForm: {
     marginVertical: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 10,
   },
   input: {
-    width: "80%",
+    width: '80%',
     borderRadius: 40,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderColor: "#000",
+    borderColor: '#000',
     borderWidth: 2,
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     letterSpacing: 0.8,
-    color: "rgba(0,0,0,0.8)",
+    color: 'rgba(0,0,0,0.8)',
     marginVertical: 10,
   },
   loginBtn: {
     box: {
-      width: "80%",
+      width: '80%',
       borderRadius: 40,
       paddingVertical: 12,
       paddingHorizontal: 20,
     },
     text: {
-      textAlign: "center",
-      color: "#fff",
+      textAlign: 'center',
+      color: '#fff',
       fontSize: 18,
-      fontWeight: "bold",
+      fontWeight: 'bold',
     },
   },
   loginFormExtra: {
     box: {
       marginVertical: 20,
       paddingBottom: 10,
-      borderColor: "rgba(0,0,0,0.1)",
+      borderColor: 'rgba(0,0,0,0.1)',
       borderBottomWidth: 1.2,
     },
     textRow: {
-      alignItems: "center",
+      alignItems: 'center',
       marginVertical: 3,
     },
     secondaryColor: {
-      color: "#f8c748",
+      color: '#f8c748',
       fontSize: 16,
       letterSpacing: 0.9,
-      fontWeight: "bold",
+      fontWeight: 'bold',
     },
     primaryColor: {
-      color: "rgba(0,0,0,0.6)",
+      color: 'rgba(0,0,0,0.6)',
     },
   },
   socialLogin: {
     box: {
-      alignItems: "center",
+      alignItems: 'center',
     },
     btn: {
       width: 280,
-      flexDirection: "row",
+      flexDirection: 'row',
       marginVertical: 5,
-      alignItems: "center",
+      alignItems: 'center',
       paddingHorizontal: 20,
       paddingVertical: 6,
       borderRadius: 20,
       borderWidth: 2,
-      borderColor: "rgba(0,0,0,0.5)",
+      borderColor: 'rgba(0,0,0,0.5)',
     },
     iconBox: {
       marginRight: 20,
@@ -778,18 +763,18 @@ const styles = StyleSheet.create({
       fontSize: 18,
     },
     snapchat: {
-      backgroundColor: "#f8c748",
-      borderColor: "transparent",
+      backgroundColor: '#f8c748',
+      borderColor: 'transparent',
     },
     facebook: {
-      flexDirection: "row",
-      borderColor: "transparent",
+      flexDirection: 'row',
+      borderColor: 'transparent',
     },
     facebookBG: {
       width: 280,
-      flexDirection: "row",
+      flexDirection: 'row',
       marginVertical: 5,
-      alignItems: "center",
+      alignItems: 'center',
       paddingHorizontal: 20,
       paddingVertical: 8,
       borderRadius: 20,

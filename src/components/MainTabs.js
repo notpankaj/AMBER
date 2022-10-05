@@ -1,31 +1,30 @@
-import React, { useEffect } from "react";
-import { Image, StyleSheet, View, Text } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Shop from "../screens/shop/Shop";
-import AddPost from "../screens/add_post/AddPost";
-import Inbox from "../screens/inbox/Inbox";
-import Profile from "../screens/profile/Profile";
-import ProfileRoutes from "../screens/profile/ProfileRoutes";
-import HomeScreen from "../screens/home/HomeScreen";
-import InboxRoutes from "../screens/inbox/InboxRoutes";
-import ShopRoutes from "../screens/shop/ShopRoutes";
-import { BlurView } from "@react-native-community/blur";
-import Toast from "react-native-toast-message";
-import { useNavigation } from "@react-navigation/core";
-import HomeRoutes from "../screens/home/MidTabViews/HomeRoutes";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useEffect} from 'react';
+import {Image, StyleSheet, View, Text} from 'react-native';
+import {BlurView} from '@react-native-community/blur';
+import Toast from 'react-native-toast-message';
+import {useNavigation} from '@react-navigation/core';
+import {AGREE_TO_TERM_AND_CONDITION_KEY, colors} from '../constants';
+import {useDispatch, useSelector} from 'react-redux';
 import {
-  ADD_POPUP_OVERLAY,
-  REMOVE_POPUP_OVERLAY,
   SET_CURRENT_ACTIVE_MAIN_TAB,
   SET_PREV_ACTIVE_MAIN_TAB,
-} from "../redux/reducers/actionTypes";
-import GetPaidView from "../screens/shop/GetPaidView";
-import GoLiveScreen from "../screens/settings/GoLiveScreen";
-import { AGREE_TO_TERM_AND_CONDITION_KEY, colors } from "../constants";
-import { TabBarContext } from "../../App";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import PlusRoutes from "../screens/plusBtn/PlusRoutes";
+} from '../redux/reducers/actionTypes';
+import {TabBarContext} from '../../App';
+
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import ProfileRoutes from '../screens/profile/ProfileRoutes';
+
+// import Shop from '../screens/shop/Shop';
+// import AddPost from '../screens/add_post/AddPost';
+import Inbox from '../screens/inbox/Inbox';
+// import Profile from '../screens/profile/Profile';
+// import HomeScreen from '../screens/home/HomeScreen';
+import ShopRoutes from '../screens/shop/ShopRoutes';
+import HomeRoutes from '../screens/home/MidTabViews/HomeRoutes';
+// import PlusRoutes from '../screens/plusBtn/PlusRoutes';
+// import GetPaidView from '../screens/shop/GetPaidView';
+// import GoLiveScreen from '../screens/settings/GoLiveScreen';
+import Temp from '../../Temp';
 
 const tabBarIcon = {
   width: 25,
@@ -33,38 +32,38 @@ const tabBarIcon = {
 };
 
 const tabColors = {
-  inActiveIconColor: "#fff",
-  activeIconColor: "#f47328",
-  blurOverlayColor: "rgba(45, 33, 47,0.5)",
+  inActiveIconColor: '#fff',
+  activeIconColor: '#f47328',
+  blurOverlayColor: 'rgba(45, 33, 47,0.5)',
 };
 
 const Tab = createBottomTabNavigator();
 
 const MainTabs = () => {
-  const { prevActiveMainTab, currentActiveMainTab } = useSelector(
-    (state) => state.extra
+  const {prevActiveMainTab, currentActiveMainTab} = useSelector(
+    state => state.extra,
   );
   const dispatch = useDispatch();
-  const { auth } = useSelector((state) => state);
-  const { tabSettings } = React.useContext(TabBarContext);
+  const {auth} = useSelector(state => state);
+  const {tabSettings} = React.useContext(TabBarContext);
   const blurTabMode = tabSettings?.blurTabMode;
   const showTabBar = tabSettings?.showTabBar;
-  console.log(React.useContext(TabBarContext), "hsdfijhdjsfhasf");
+  console.log(React.useContext(TabBarContext), 'hsdfijhdjsfhasf');
 
-  const checkTermsAndConditionsAgreement = async () => {
-    try {
-      const res = await AsyncStorage.getItem(AGREE_TO_TERM_AND_CONDITION_KEY);
-      // console.log(res, "AGREE_TO_TERM_AND_CONDITION_KEY");
-      if (!res) {
-        dispatch({ type: ADD_POPUP_OVERLAY });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const checkTermsAndConditionsAgreement = async () => {
+  //   try {
+  //     const res = await AsyncStorage.getItem(AGREE_TO_TERM_AND_CONDITION_KEY);
+  //     // console.log(res, "AGREE_TO_TERM_AND_CONDITION_KEY");
+  //     if (!res) {
+  //       dispatch({type: ADD_POPUP_OVERLAY});
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   React.useEffect(() => {
-    checkTermsAndConditionsAgreement();
+    // checkTermsAndConditionsAgreement();
   }, []);
 
   return (
@@ -74,11 +73,11 @@ const MainTabs = () => {
         screenOptions={{
           headerShown: false,
           tabBarLabelStyle: {
-            fontWeight: "bold",
+            fontWeight: 'bold',
             letterSpacing: 1,
             paddingBottom: 5,
           },
-          tabBarHideOnKeyboard: "true",
+          tabBarHideOnKeyboard: 'true',
           tabBarActiveTintColor: blurTabMode
             ? tabColors.activeIconColor
             : colors.TextBlackLight,
@@ -87,14 +86,14 @@ const MainTabs = () => {
             : colors.TextWhiteDark,
 
           tabBarStyle: {
-            position: "absolute",
+            position: 'absolute',
             bottom: 0,
             paddingBottom: 10,
             height: 70,
-            borderTopColor: "transparent",
-            overflow: "hidden",
-            backgroundColor: blurTabMode ? "#fff" : colors.amberColor,
-            display: "flex",
+            borderTopColor: 'transparent',
+            overflow: 'hidden',
+            backgroundColor: blurTabMode ? '#fff' : colors.amberColor,
+            display: 'flex',
           },
           tabBarBackground: () =>
             blurTabMode && (
@@ -103,7 +102,7 @@ const MainTabs = () => {
                 intensity={20}
                 overlayColor={tabColors.blurOverlayColor}
                 style={{
-                  position: "absolute",
+                  position: 'absolute',
                   top: 0,
                   left: 0,
                   right: 0,
@@ -111,27 +110,26 @@ const MainTabs = () => {
                 }}
               />
             ),
-        }}
-      >
+        }}>
         <Tab.Screen
           name="Home"
-          listeners={({ navigation }) => ({
+          listeners={({navigation}) => ({
             tabPress: () => {
               dispatch({
                 type: SET_PREV_ACTIVE_MAIN_TAB,
                 payload: currentActiveMainTab,
               });
-              dispatch({ type: SET_CURRENT_ACTIVE_MAIN_TAB, payload: "HOME" });
+              dispatch({type: SET_CURRENT_ACTIVE_MAIN_TAB, payload: 'HOME'});
             },
           })}
           component={HomeRoutes}
           options={{
             unmountOnBlur: true,
-            tabBarLabel: "Home",
+            tabBarLabel: 'Home',
 
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({color, size, focused}) => (
               <Image
-                source={require("../assets/icons/mainTab/home.png")}
+                source={require('../assets/icons/mainTab/home.png')}
                 style={{
                   width: tabBarIcon.width - 1,
                   height: tabBarIcon.height - 1,
@@ -147,10 +145,10 @@ const MainTabs = () => {
             ),
           }}
         />
-        {auth?.user?.gender === "male" ? (
+        {auth?.user?.gender === 'male' ? (
           <Tab.Screen
             name="Shop"
-            listeners={({ navigation }) => ({
+            listeners={({navigation}) => ({
               tabPress: () => {
                 dispatch({
                   type: SET_PREV_ACTIVE_MAIN_TAB,
@@ -158,18 +156,18 @@ const MainTabs = () => {
                 });
                 dispatch({
                   type: SET_CURRENT_ACTIVE_MAIN_TAB,
-                  payload: "SHOP",
+                  payload: 'SHOP',
                 });
               },
             })}
             component={ShopRoutes}
             options={{
-              tabBarLabel: "Shop",
+              tabBarLabel: 'Shop',
 
               unmountOnBlur: true,
-              tabBarIcon: ({ color, size, focused }) => (
+              tabBarIcon: ({color, size, focused}) => (
                 <Image
-                  source={require("../assets/icons/mainTab/coin.png")}
+                  source={require('../assets/icons/mainTab/coin.png')}
                   style={{
                     width: tabBarIcon.width + 2,
                     height: tabBarIcon.height + 2,
@@ -188,7 +186,7 @@ const MainTabs = () => {
         ) : (
           <Tab.Screen
             name="Earn"
-            listeners={({ navigation }) => ({
+            listeners={({navigation}) => ({
               tabPress: () => {
                 dispatch({
                   type: SET_PREV_ACTIVE_MAIN_TAB,
@@ -196,17 +194,17 @@ const MainTabs = () => {
                 });
                 dispatch({
                   type: SET_CURRENT_ACTIVE_MAIN_TAB,
-                  payload: "SHOP",
+                  payload: 'SHOP',
                 });
               },
             })}
-            component={GoLiveScreen}
+            component={Temp}
             options={{
-              tabBarLabel: "Earn",
+              tabBarLabel: 'Earn',
               unmountOnBlur: true,
-              tabBarIcon: ({ color, size, focused }) => (
+              tabBarIcon: ({color, size, focused}) => (
                 <Image
-                  source={require("../assets/icons/mainTab/coin.png")}
+                  source={require('../assets/icons/mainTab/coin.png')}
                   style={{
                     width: tabBarIcon.width + 2,
                     height: tabBarIcon.height + 2,
@@ -225,13 +223,13 @@ const MainTabs = () => {
         )}
         <Tab.Screen
           name="AddPost"
-          component={PlusRoutes}
+          component={Temp}
           options={{
-            tabBarLabel: " ",
+            tabBarLabel: ' ',
             unmountOnBlur: true,
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({color, size, focused}) => (
               <Image
-                source={require("../assets/icons/mainTab/add.png")}
+                source={require('../assets/icons/mainTab/add.png')}
                 style={{
                   width: tabBarIcon.width + 15,
                   height: tabBarIcon.height + 15,
@@ -246,28 +244,27 @@ const MainTabs = () => {
                 }
               />
             ),
-          }}
-        ></Tab.Screen>
+          }}></Tab.Screen>
         <Tab.Screen
           name="Inbox"
-          component={InboxRoutes}
-          listeners={({ navigation }) => ({
+          component={Inbox}
+          listeners={({navigation}) => ({
             tabPress: () => {
               dispatch({
                 type: SET_PREV_ACTIVE_MAIN_TAB,
                 payload: currentActiveMainTab,
               });
-              dispatch({ type: SET_CURRENT_ACTIVE_MAIN_TAB, payload: "INBOX" });
+              dispatch({type: SET_CURRENT_ACTIVE_MAIN_TAB, payload: 'INBOX'});
             },
           })}
           options={{
             unmountOnBlur: true,
-            tabBarLabel: "Inbox",
-            tabBarIcon: ({ color, size, focused }) => (
-              <View style={{ position: "relative" }}>
+            tabBarLabel: 'Inbox',
+            tabBarIcon: ({color, size, focused}) => (
+              <View style={{position: 'relative'}}>
                 <Image
-                  source={require("../assets/icons/mainTab/inbox.png")}
-                  style={{ width: tabBarIcon.width, height: tabBarIcon.height }}
+                  source={require('../assets/icons/mainTab/inbox.png')}
+                  style={{width: tabBarIcon.width, height: tabBarIcon.height}}
                   tintColor={
                     focused
                       ? blurTabMode
@@ -279,27 +276,25 @@ const MainTabs = () => {
                 {false && (
                   <Text
                     style={{
-                      position: "absolute",
+                      position: 'absolute',
                       top: 0,
                       right: 0,
-                      backgroundColor: "red",
+                      backgroundColor: 'red',
                       width: 10,
                       height: 10,
-                      justifyContent: "center",
-                      alignItems: "center",
+                      justifyContent: 'center',
+                      alignItems: 'center',
                       borderRadius: 100,
-                    }}
-                  ></Text>
+                    }}></Text>
                 )}
               </View>
             ),
           }}
         />
-
         <Tab.Screen
           name="ProfileRoutes"
           component={ProfileRoutes}
-          listeners={({ navigation }) => ({
+          listeners={({navigation}) => ({
             tabPress: () => {
               dispatch({
                 type: SET_PREV_ACTIVE_MAIN_TAB,
@@ -307,16 +302,16 @@ const MainTabs = () => {
               });
               dispatch({
                 type: SET_CURRENT_ACTIVE_MAIN_TAB,
-                payload: "PROFILE",
+                payload: 'PROFILE',
               });
             },
           })}
           options={{
             unmountOnBlur: true,
-            tabBarLabel: "Profile",
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarLabel: 'Profile',
+            tabBarIcon: ({color, size, focused}) => (
               <Image
-                source={require("../assets/icons/mainTab/profile.png")}
+                source={require('../assets/icons/mainTab/profile.png')}
                 style={{
                   width: tabBarIcon.width,
                   height: tabBarIcon.height,

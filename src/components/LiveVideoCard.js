@@ -29,7 +29,7 @@ const LiveVideoCard = ({ item, index }) => {
   const navigateToUserProfile = (id) => {
     navigation.navigate("ViewOtherProfile", {
       user: item,
-      userId: item.id,
+      userId: item?.id || item?._id,
     });
   };
 
@@ -48,7 +48,7 @@ const LiveVideoCard = ({ item, index }) => {
 
     const dataObj = {
       channelName: auth?.user?.id,
-      receiverId: item.id,
+      receiverId: item?.id || item?._id,
       callerId: auth?.user?.id,
       username: auth?.user?.username,
     };
@@ -82,7 +82,7 @@ const LiveVideoCard = ({ item, index }) => {
             channel_id,
             call_type: "CALLER",
             call_mode: "NORMAL",
-            callingToUserId: item.id,
+            callingToUserId: item?.id || item?._id,
             call_rate,
           });
         }
@@ -192,7 +192,8 @@ const LiveVideoCard = ({ item, index }) => {
             style={{
               width: 50,
               height: 50,
-              backgroundColor: "#49cf76",
+              backgroundColor:
+                item?.keyOnline === "Offline" ? "tomato" : "#49cf76",
               justifyContent: "center",
               alignItems: "center",
               borderRadius: 50,

@@ -1,28 +1,28 @@
-import React from "react";
+import React from 'react';
 import {
   StyleSheet,
   View,
   FlatList,
   ActivityIndicator,
   Alert,
-} from "react-native";
-import LiveVideoCard from "../../components/LiveVideoCard";
-import HeaderBackTitle from "../../components/HeaderBackTitle";
-import { useNavigation } from "@react-navigation/core";
-import { useSelector } from "react-redux";
-import { api_usersRandom } from "../../api_services";
+} from 'react-native';
+import LiveVideoCard from '../../components/LiveVideoCard';
+import HeaderBackTitle from '../../components/HeaderBackTitle';
+import {useNavigation} from '@react-navigation/core';
+import {useSelector} from 'react-redux';
+import {api_usersRandom} from '../../api_services';
 
 const PAGE_SIZE = 10;
-const RandomUsersScreen = ({ setActiveRandomView, route }) => {
-  console.log(route, "from RandomUsersScreen");
+const RandomUsersScreen = ({setActiveRandomView, route}) => {
+  console.log(route, 'from RandomUsersScreen');
   const navigation = useNavigation(null);
-  const { auth } = useSelector((s) => s);
+  const {auth} = useSelector(s => s);
   const [randomUsers, setRandomUsers] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
 
   React.useLayoutEffect(() => {
-    const { handleStopRandomBgMusic } = route?.params;
-    if (handleStopRandomBgMusic) {
+    const {handleStopRandomBgMusic} = route?.params;
+    if (handleStopRandomBgMusic !== undefined) {
       handleStopRandomBgMusic();
     }
   }, []);
@@ -41,27 +41,26 @@ const RandomUsersScreen = ({ setActiveRandomView, route }) => {
       if (res?.isSuccess) {
         setRandomUsers(res?.items);
       } else {
-        throw new Error(res?.error || "something went wrong!");
+        throw new Error(res?.error || 'something went wrong!');
       }
     } catch (error) {
-      Alert.alert("Alert", error?.message);
+      Alert.alert('Alert', error?.message);
     } finally {
       setLoading(false);
     }
   };
 
-  console.log({ randomUsers });
+  console.log({randomUsers});
   React.useEffect(() => {
     hitGetRandomUser();
   }, []);
   return (
     <View
       style={{
-        width: "100%",
+        width: '100%',
         flex: 1,
         marginBottom: 70,
-      }}
-    >
+      }}>
       <HeaderBackTitle
         title="Random Users"
         onBackPress={() => navigation.goBack()}
@@ -70,31 +69,30 @@ const RandomUsersScreen = ({ setActiveRandomView, route }) => {
       <FlatList
         initialNumToRender={100}
         style={{
-          width: "90%",
-          alignSelf: "center",
+          width: '90%',
+          alignSelf: 'center',
         }}
         columnWrapperStyle={{
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
         data={randomUsers}
         ListEmptyComponent={
           loading && (
             <View
               style={{
-                width: "100%",
+                width: '100%',
                 height: 200,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <ActivityIndicator color="orange" size="large" />
             </View>
           )
         }
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         numColumns={2}
-        renderItem={({ item, index }) => {
+        renderItem={({item, index}) => {
           return <LiveVideoCard index={index} item={item} />;
         }}
         onEndReached={() => {

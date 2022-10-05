@@ -14,7 +14,7 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
 import {TapGestureHandler} from 'react-native-gesture-handler';
-import Carousel from 'react-native-snap-carousel';
+// import Carousel from 'react-native-snap-carousel';
 import {useState} from 'react';
 import {
   api_userDeleteImageOrVideo,
@@ -104,7 +104,7 @@ const ScrollableVideos = ({route}) => {
               backgroundColor: '#000',
               // marginBottom: 70
             }}>
-            <Carousel
+            {/* <Carousel
               onSnapToItem={index => setActiveIndex(index)}
               ref={i => {
                 console.log(i, 'oooo');
@@ -171,7 +171,7 @@ const ScrollableVideos = ({route}) => {
               }}
               sliderWidth={Dimensions.get('window').width}
               itemWidth={Dimensions.get('window').width}
-            />
+            /> */}
           </View>
           {showVideoDeleteButton && (
             <View

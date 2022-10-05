@@ -784,15 +784,22 @@ export const api_SeenNotification = async (payload) => {
 
 // inAppPurchase coins
 export const api_inAppPurchase = async (payload) => {
+  console.log("I AM CALLED");
   const { purchase, userID, token, ITEM, OS } = payload;
   let { transactionReceipt, dataAndroid } = purchase;
   transactionReceipt = JSON.parse(transactionReceipt);
   dataAndroid = JSON.parse(dataAndroid);
 
+  const price = ITEM?.price || 0;
+
+  const totalCoins = ITEM?.title?.split(" ")[0]?.replace(",", "") || 0;
+
+  console.log({ price, totalCoins, ITEM }, "lelelelellele");
   const BODY_DATA = {
     userId: userID,
-    coinId: ITEM?._id,
-    amount: ITEM?.price,
+    // coinId: ITEM?._id,
+    coins: totalCoins,
+    amount: Number(price),
     status: purchase?.purchaseStateAndroid ? "succeeded" : "failed",
     productId: purchase?.productId,
     transactionReceipt: {
@@ -809,8 +816,7 @@ export const api_inAppPurchase = async (payload) => {
     transactionId: purchase?.transactionId,
     transactionDate: purchase?.transactionDate,
   };
-  console.log(BODY_DATA);
-
+  console.log(BODY_DATA, "BODY_DATA");
   const uri = `${BASE_URL}/coins/inAppPurchase`;
 
   const response = await fetch(uri, {

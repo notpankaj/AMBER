@@ -83,13 +83,12 @@ export default FileUploadForm = ({
         flex: 1,
         justifyContent: "center",
         backgroundColor: "#000",
+        zIndex: 100000000,
       }}
     >
       <View
         style={{
           width: "100%",
-          position: "absolute",
-          top: 10,
           backgroundColor: "#000",
           flexDirection: "row",
           paddingHorizontal: 20,
@@ -112,7 +111,12 @@ export default FileUploadForm = ({
         </Text>
         <View style={{ flex: 1, alignItems: "flex-end" }}>
           <TouchableOpacity
-            style={{ width: 60 }}
+            style={{
+              width: 60,
+              paddingHorizontal: 5,
+              paddingVertical: 5,
+              zIndex: 10000,
+            }}
             onPress={() => {
               handleUploadVideo();
             }}
@@ -183,7 +187,7 @@ export default FileUploadForm = ({
           bottom: 50,
         }}
       >
-        {selectedVideo && (
+        {/* {selectedVideo && (
           <TouchableOpacity
             onPress={handlePickVideo}
             style={{
@@ -197,7 +201,7 @@ export default FileUploadForm = ({
           >
             <Feather name="upload" size={25} color="#fff" />
           </TouchableOpacity>
-        )}
+        )} */}
       </View>
     </View>
   );

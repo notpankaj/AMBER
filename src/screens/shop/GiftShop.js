@@ -3,7 +3,6 @@ import React from 'react';
 import {
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
   Image,
   Alert,
@@ -14,7 +13,6 @@ import {colors} from '../../constants';
 
 import LinearGradient from 'react-native-linear-gradient';
 import PaymentOptionsModal from '../../components/PaymentOptionsModal';
-import PurchaseCompleteNotification from '../../components/PurchaseCompleteNotification';
 import {api_getGifts} from '../../api_services';
 import {useDispatch, useSelector} from 'react-redux';
 import {SET_SELECTED_GIFT_FOR_PURCHASE} from '../../redux/reducers/actionTypes';

@@ -89,6 +89,7 @@ const OfferOverlay = () => {
       ITEM: GOOGLE_PLAY_PRODUCT_ID,
       OS: Platform.OS,
     };
+
     try {
       const res = await api_inAppPurchase(payload);
       console.log(res);

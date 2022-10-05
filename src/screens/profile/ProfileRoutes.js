@@ -1,17 +1,13 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import Profile from './Profile';
 import EditProfile from './EditProfile';
 import SettingRoutes from '../settings/SettingRoutes';
-import FollowersScreen from './follow/FollowersScreen';
 import MyGifts from './MyGifts';
-import {useNavigation} from '@react-navigation/core';
-import ScrollablePhotos from './gallary/ScrollablePhotos';
 import UpdateProfile from './UpdateProfile';
+import Profile from './Profile';
+import FollowersScreen from './follow/FollowersScreen';
 const Stack = createStackNavigator();
-const ProfileRoutes = ({route}) => {
-  const navigation = useNavigation();
-
+const ProfileRoutes = () => {
   return (
     <Stack.Navigator
       initialRouteName={'Profile'}
@@ -26,8 +22,6 @@ const ProfileRoutes = ({route}) => {
       <Stack.Screen name="FollowersScreen" component={FollowersScreen} />
       <Stack.Screen name="MyGifts" component={MyGifts} />
       <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
-      {/* <Stack.Screen name="ScrollablePhotos" component={ScrollablePhotos} /> */}
-      {/* <Stack.Screen name="ViewOtherProfile" component={ViewOtherProfile} /> */}
     </Stack.Navigator>
   );
 };

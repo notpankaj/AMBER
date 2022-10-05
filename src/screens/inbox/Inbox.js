@@ -1,40 +1,38 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import MessagesView from "./MessagesView";
-import NotificationsView from "./NotificationsView";
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import MessagesView from './MessagesView';
+import NotificationsView from './NotificationsView';
 
-const midTabs = ["NOTIFICATIONS", "MESSAGES"];
+const midTabs = ['NOTIFICATIONS', 'MESSAGES'];
 
-const Inbox = ({ navigation }) => {
+const Inbox = ({navigation}) => {
   const [activeMinNav, setActiveMinNav] = useState(midTabs[1]);
 
-  console.log({ activeMinNav });
+  console.log({activeMinNav});
 
-  const handleMidNavChange = (midTabName) => {
+  const handleMidNavChange = midTabName => {
     setActiveMinNav(midTabName);
   };
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ minHeight: 50 }}></View>
+    <View style={{flex: 1}}>
+      <View style={{minHeight: 50}}></View>
       {/* mid Nav Start */}
       <View
         style={{
-          alignItems: "center",
-        }}
-      >
+          alignItems: 'center',
+        }}>
         <View style={styles.midNav.box}>
           <TouchableOpacity onPress={() => handleMidNavChange(midTabs[0])}>
             <Text
               style={{
-                color: "#fff",
+                color: '#fff',
                 paddingVertical: 5,
                 paddingHorizontal: 12,
-                overflow: "hidden",
+                overflow: 'hidden',
                 borderRadius: 14,
                 backgroundColor:
-                  activeMinNav === midTabs[0] ? "#f6af00" : "#222",
-              }}
-            >
+                  activeMinNav === midTabs[0] ? '#f6af00' : '#222',
+              }}>
               Notifications
             </Text>
           </TouchableOpacity>
@@ -42,31 +40,29 @@ const Inbox = ({ navigation }) => {
           <TouchableOpacity onPress={() => handleMidNavChange(midTabs[1])}>
             <Text
               style={{
-                color: "#fff",
+                color: '#fff',
                 paddingVertical: 5,
                 paddingHorizontal: 12,
-                overflow: "hidden",
+                overflow: 'hidden',
                 borderRadius: 14,
                 backgroundColor:
-                  activeMinNav === midTabs[1] ? "#f6af00" : "#222",
-              }}
-            >
+                  activeMinNav === midTabs[1] ? '#f6af00' : '#222',
+              }}>
               Messages
             </Text>
             {false && (
               <Text
                 style={{
-                  position: "absolute",
+                  position: 'absolute',
                   top: -4,
                   right: 0,
-                  backgroundColor: "red",
+                  backgroundColor: 'red',
                   width: 13,
                   height: 13,
-                  justifyContent: "center",
-                  alignItems: "center",
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   borderRadius: 100,
-                }}
-              ></Text>
+                }}></Text>
             )}
           </TouchableOpacity>
         </View>
@@ -86,12 +82,12 @@ export default Inbox;
 const styles = StyleSheet.create({
   midNav: {
     box: {
-      backgroundColor: "#222",
+      backgroundColor: '#222',
       height: 35,
       minWidth: 230,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-evenly",
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-evenly',
       borderRadius: 50,
     },
   },

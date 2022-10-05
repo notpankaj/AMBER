@@ -1,16 +1,15 @@
-import 'react-native-gesture-handler';
 import React, {useEffect} from 'react';
 import {StyleSheet, SafeAreaView, StatusBar} from 'react-native';
 import {NativeBaseProvider} from 'native-base';
-import {Provider} from 'react-redux';
-import {ApplicationProvider} from '@ui-kitten/components';
+import 'react-native-gesture-handler';
 import store from './src/redux/store';
-
+import {Provider} from 'react-redux';
+import * as eva from '@eva-design/eva';
+import {ApplicationProvider} from '@ui-kitten/components';
 import SignupProvider from './src/context/SignupContext';
-import Routes from './src/router';
-
-import {colors, STRIPE_PUBLISH_KEY} from './src/constants';
+import {colors} from './src/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Routes from './src/router';
 
 export const TabBarContext = React.createContext();
 export const MultiStepSignUpContext = React.createContext();

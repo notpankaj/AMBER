@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
+import React, {useEffect} from 'react';
+import {StyleSheet} from 'react-native';
 
 import Animated, {
   useSharedValue,
@@ -10,9 +10,9 @@ import Animated, {
   withRepeat,
   withDelay,
   Easing,
-} from "react-native-reanimated";
+} from 'react-native-reanimated';
 
-const Pulse = ({ delay = 0, repeat }) => {
+const Pulse = ({delay = 0, repeat}) => {
   const animation = useSharedValue(0);
   useEffect(() => {
     animation.value = withDelay(
@@ -23,8 +23,8 @@ const Pulse = ({ delay = 0, repeat }) => {
           easing: Easing.linear,
         }),
         repeat ? -1 : 1,
-        false
-      )
+        false,
+      ),
     );
   }, []);
   const animatedStyles = useAnimatedStyle(() => {
@@ -32,11 +32,11 @@ const Pulse = ({ delay = 0, repeat }) => {
       animation.value,
       [0, 1],
       [0.6, 0],
-      Extrapolate.CLAMP
+      Extrapolate.CLAMP,
     );
     return {
       opacity: opacity,
-      transform: [{ scale: animation.value }],
+      transform: [{scale: animation.value}],
     };
   });
   return <Animated.View style={[styles.circle, animatedStyles]} />;
@@ -47,20 +47,20 @@ export default Pulse;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
     paddingTop: 20,
-    backgroundColor: "#ecf0f1",
+    backgroundColor: '#ecf0f1',
     padding: 8,
   },
   circle: {
     width: 300,
     borderRadius: 150,
     height: 300,
-    position: "absolute",
+    position: 'absolute',
     // borderColor: '#e91e63',
-    borderColor: "green",
+    borderColor: 'green',
     borderWidth: 4,
     // backgroundColor: '#ff6090',
-    backgroundColor: "#49cf76",
+    backgroundColor: '#49cf76',
   },
 });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
   View,
@@ -8,82 +8,80 @@ import {
   TouchableOpacity,
   Alert,
   ToastAndroid,
-} from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import Entypo from "react-native-vector-icons/Entypo";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import Toast from "react-native-toast-message";
-import { useDispatch, useSelector } from "react-redux";
-import FollowBtn from "../../components/FollowBtn";
-import { getViewProfile } from "../../redux/actions/profile.action";
-import MyLoader from "../../components/MyLoader";
+} from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Toast from 'react-native-toast-message';
+import {useDispatch, useSelector} from 'react-redux';
+import FollowBtn from '../../components/FollowBtn';
+import {getViewProfile} from '../../redux/actions/profile.action';
+import MyLoader from '../../components/MyLoader';
 import {
   api_blockUser,
   api_followUser,
   api_unfollowUser,
   api_userReport,
-} from "../../api_services";
-import HeaderBackTitle from "../../components/HeaderBackTitle";
-import VideoGallary from "./gallary/VideoGallary";
+} from '../../api_services';
+import HeaderBackTitle from '../../components/HeaderBackTitle';
+import VideoGallary from './gallary/VideoGallary';
 import {
   CURRENT_VIEW_PROFILE_SUCCESS,
   REMOVE_USER_FROM_USERLIST,
-} from "../../redux/reducers/actionTypes";
-import PhotoGallary from "./gallary/PhotoGallary";
-import { getCoversationList } from "../../redux/actions/chat.actions";
-import ReportUser from "../../components/ReportUser";
-import { createRef } from "react";
-import ActionSheet, { SheetManager } from "react-native-actions-sheet";
-import ImageComp from "../../components/ImageComp";
-import { MIN_COINS_TO_ACCESS } from "../../constants";
-
+} from '../../redux/reducers/actionTypes';
+import PhotoGallary from './gallary/PhotoGallary';
+import {getCoversationList} from '../../redux/actions/chat.actions';
+import ReportUser from '../../components/ReportUser';
+import {createRef} from 'react';
+import ActionSheet, {SheetManager} from 'react-native-actions-sheet';
+import ImageComp from '../../components/ImageComp';
+import {MIN_COINS_TO_ACCESS} from '../../constants';
+import InfoBox from './InfoBox';
 const REPORT_DATA = [
   {
-    icon: "user",
+    icon: 'user',
     title: "I don't like this user",
-    color: "green",
+    color: 'green',
   },
   {
-    color: "pink",
-    icon: "skin",
-    title: "Nuditiy and inappropriate content",
+    color: 'pink',
+    icon: 'skin',
+    title: 'Nuditiy and inappropriate content',
   },
   {
-    color: "gray",
-    icon: "clockcircle",
-    title: "Spam or fraud",
+    color: 'gray',
+    icon: 'clockcircle',
+    title: 'Spam or fraud',
   },
   {
-    color: "green",
-    icon: "notification",
-    title: "Verbal harassment",
+    color: 'green',
+    icon: 'notification',
+    title: 'Verbal harassment',
   },
   {
-    color: "orange",
-    icon: "exclamationcircleo",
-    title: "Violent content",
+    color: 'orange',
+    icon: 'exclamationcircleo',
+    title: 'Violent content',
   },
   {
-    color: "purple",
-    icon: "warning",
-    title: "Underage",
+    color: 'purple',
+    icon: 'warning',
+    title: 'Underage',
   },
   {
-    color: "red",
-    icon: "fork",
-    title: "False gender",
+    color: 'red',
+    icon: 'fork',
+    title: 'False gender',
   },
 ];
 
-const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
+const ViewOtherProfile = ({route, navigation, CustomBack = true}) => {
   const dispatch = useDispatch();
 
   const [isAmFollowing, setIsAmFollowing] = useState(false);
   const [disableBlockBtn, setDisableBlockBtn] = useState(false);
   const [isVideoGallaryActive, setIsVideoGallaryActive] = useState(false);
   const [overRiderFollowText, setOverRiderFollowText] = useState(null);
-  const { userId } = route.params;
+  const {userId} = route.params;
   const [isReportVisible, setIsReportVisible] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   const [shortMenu, setShortMenu] = useState(false);
@@ -92,16 +90,16 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
   const [isPhotoGallaryActive, setIsPhotoGallaryActive] = useState(false);
 
   console.log(route);
-  const { auth, profile, extra, coin } = useSelector((state) => state);
+  const {auth, profile, extra, coin} = useSelector(state => state);
   const {
     loading: profileLoading,
     error: profileError,
     currentViewProfile,
   } = profile;
 
-  const handleNavigate = (route) => navigation.navigate(route);
+  const handleNavigate = route => navigation.navigate(route);
 
-  const handleToast = (type = "success", text1 = "Success", text2 = "") => {
+  const handleToast = (type = 'success', text1 = 'Success', text2 = '') => {
     Toast.show({
       type,
       text1,
@@ -110,10 +108,10 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
   };
 
   useEffect(() => {
-    dispatch(getViewProfile({ token: auth.accessToken, userId: userId }));
+    dispatch(getViewProfile({token: auth.accessToken, userId: userId}));
 
     if (profileError) {
-      handleToast("error", "error", profileError);
+      handleToast('error', 'error', profileError);
     }
   }, [userId]);
 
@@ -129,13 +127,13 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
       userId: auth.user.id,
       tragetUserId: userId,
     });
-    console.log(response, "follow");
+    console.log(response, 'follow');
 
     if (response.isSuccess && response.statusCode === 200) {
-      ToastAndroid.show("follow success!", ToastAndroid.SHORT);
+      ToastAndroid.show('follow success!', ToastAndroid.SHORT);
       setIsAmFollowing(true);
     } else {
-      handleToast("error", "error", response.error || "failed to follow!");
+      handleToast('error', 'error', response.error || 'failed to follow!');
     }
   };
   const handleUnFollow = async () => {
@@ -144,23 +142,23 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
       userId: auth.user.id,
       tragetUserId: userId,
     });
-    console.log(response, "unfollow");
+    console.log(response, 'unfollow');
     if (response.isSuccess && response.statusCode === 200) {
-      ToastAndroid.show("unfollow success!", ToastAndroid.SHORT);
+      ToastAndroid.show('unfollow success!', ToastAndroid.SHORT);
       setIsAmFollowing(false);
     } else {
-      handleToast("error", "error", response.error || "failed to unfollow!");
+      handleToast('error', 'error', response.error || 'failed to unfollow!');
     }
   };
 
-  console.log({ currentViewProfile });
+  console.log({currentViewProfile});
 
   const handleRefreshChatUserList = () => {
     dispatch(
       getCoversationList({
         userId: auth.user.id,
         authToken: auth.accessToken,
-      })
+      }),
     );
   };
 
@@ -174,17 +172,17 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
         bodyData,
         authToken: auth.accessToken,
       });
-      console.log({ response });
+      console.log({response});
       if (response.isSuccess && response.statusCode === 200) {
-        handleToast("success", "success", response.error || "Blocked!");
+        handleToast('success', 'success', response.error || 'Blocked!');
         dispatch({
           type: REMOVE_USER_FROM_USERLIST,
-          payload: { userId: currentViewProfile?.id },
+          payload: {userId: currentViewProfile?.id},
         });
         handleRefreshChatUserList();
         setDisableBlockBtn(true);
       } else {
-        handleToast("error", "error", response.error || "failed to Blocked!");
+        handleToast('error', 'error', response.error || 'failed to Blocked!');
       }
     } catch (error) {
       console.log(error);
@@ -192,43 +190,43 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
   };
 
   const hanldeBlockUser = () => {
-    Alert.alert("Block?", "are you sure to block this person", [
+    Alert.alert('Block?', 'are you sure to block this person', [
       {
-        text: "Cancel",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
       },
       {
-        text: "Block",
+        text: 'Block',
         onPress: () => handleBlockPerson(),
       },
     ]);
   };
 
   const redirectToChatScreen = () => {
-    if (auth?.user?.gender === "male") {
+    if (auth?.user?.gender === 'male') {
       if (coin?.currectCoin < MIN_COINS_TO_ACCESS) {
-        Alert.alert("Coin Alert", "not enough coins!");
+        Alert.alert('Coin Alert', 'not enough coins!');
       }
     }
 
-    navigation.navigate("ChatScreen", {
+    navigation.navigate('ChatScreen', {
       otherUserName:
         currentViewProfile?.username ||
         currentViewProfile?.fullname ||
-        "no name",
+        'no name',
       otherUserID: currentViewProfile?.id,
       otherUserProfileImage: currentViewProfile?.avatar,
     });
   };
 
-  const handlePhotoGallaryToggle = (bool) => {
-    console.log({ bool });
+  const handlePhotoGallaryToggle = bool => {
+    console.log({bool});
     setIsPhotoGallaryActive(bool);
   };
 
   const handleBack = () => {
-    const { routes } = navigation.getState();
+    const {routes} = navigation.getState();
 
     console.log(navigation.getState());
     console.log(routes);
@@ -254,25 +252,25 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
   };
 
   const handleUnmount = () => {
-    dispatch({ type: CURRENT_VIEW_PROFILE_SUCCESS, payload: null });
+    dispatch({type: CURRENT_VIEW_PROFILE_SUCCESS, payload: null});
   };
 
-  const handldeSheet = (bool) => {
+  const handldeSheet = bool => {
     if (bool) {
-      SheetManager.show("sheet");
+      SheetManager.show('sheet');
     } else {
       actionSheetRef.current.hide();
     }
   };
-  const handleReportUserSheet = (bool) => {
+  const handleReportUserSheet = bool => {
     if (bool) {
-      SheetManager.show("sheetReportUser");
+      SheetManager.show('sheetReportUser');
     } else {
       sheetReportUserRef.current.hide();
     }
   };
 
-  const handleReportPress = async (text) => {
+  const handleReportPress = async text => {
     setReportLoading(true);
     try {
       const payload = {
@@ -285,25 +283,25 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
       const res = await api_userReport(payload);
       console.log(res);
       if (res?.isSuccess) {
-        Alert.alert("Alert", "Your report is submitted!");
+        Alert.alert('Alert', 'Your report is submitted!');
       } else {
-        throw new Error(res?.error || "failed to report!");
+        throw new Error(res?.error || 'failed to report!');
       }
     } catch (error) {
-      Alert.alert("Alert", error?.message);
+      Alert.alert('Alert', error?.message);
     } finally {
       setReportLoading(false);
     }
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       {/* ----  <><><><><><><>  ---- */}
       {reportLoading && (
         <MyLoader
-          style={{ position: "absolute" }}
+          style={{position: 'absolute'}}
           visible={true}
-          text={"Reporting..."}
+          text={'Reporting...'}
         />
       )}
       <TouchableOpacity
@@ -314,15 +312,14 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
           width: 55,
           height: 55,
           padding: 5,
-          justifyContent: "center",
-          alignItems: "center",
-          position: "absolute",
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
           top: 0,
           right: 0,
           zIndex: 100,
-        }}
-      >
-        <Entypo name="dots-three-vertical" size={20} color={"#000"} />
+        }}>
+        <Entypo name="dots-three-vertical" size={20} color={'#000'} />
       </TouchableOpacity>
 
       {/* ----  <><><><><><><>  ---- */}
@@ -333,13 +330,11 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
         onBackPress={handleBack}
       />
 
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{flex: 1}}>
         <>
-          <View style={{ marginBottom: 70 }}>
+          <View style={{marginBottom: 70}}>
             <View>
-              <View
-                style={[styles.profile.container, { position: "relative" }]}
-              >
+              <View style={[styles.profile.container, {position: 'relative'}]}>
                 {profileLoading && <MyLoader visible={profileLoading} />}
                 <View style={styles.profile.avatarBox}>
                   {currentViewProfile?.avatar ? (
@@ -356,19 +351,18 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
                       style={{
                         width: 130,
                         height: 130,
-                        justifyContent: "center",
-                        alignItems: "center",
+                        justifyContent: 'center',
+                        alignItems: 'center',
                         borderRadius: 100,
-                      }}
-                    >
-                      <MaterialCommunityIcons name="face-profile" size={120} />
+                      }}>
+                      <AntDesign name="meh" size={120} />
                     </View>
                   )}
                 </View>
-                <Text style={styles.profile.username}>
+                <Text style={[styles.profile.username]}>
                   {currentViewProfile?.username ||
                     currentViewProfile?.fullname ||
-                    "No Name"}
+                    'No Name'}
                 </Text>
                 <Text style={styles.profile.bio}>
                   {currentViewProfile?.bio}
@@ -378,17 +372,15 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
                   (disableBlockBtn && (
                     <View
                       style={{
-                        backgroundColor: "red",
+                        backgroundColor: 'red',
                         padding: 5,
                         borderRadius: 20,
-                      }}
-                    >
+                      }}>
                       <Text
                         style={{
-                          color: "white",
+                          color: 'white',
                           fontSize: 16,
-                        }}
-                      >
+                        }}>
                         This User is Blocked.
                       </Text>
                     </View>
@@ -408,17 +400,16 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
                       height: 55,
                       padding: 5,
                       borderRadius: 100,
-                      backgroundColor: "orange",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      position: "absolute",
+                      backgroundColor: 'orange',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      position: 'absolute',
                       top: 140,
                       zIndex: 10,
                       right: 45,
                     }}
-                    onPress={redirectToChatScreen}
-                  >
-                    <AntDesign name="message1" size={35} color={"#000"} />
+                    onPress={redirectToChatScreen}>
+                    <AntDesign name="message1" size={35} color={'#000'} />
                   </TouchableOpacity>
                 )}
                 {!currentViewProfile?.isBlocked && (
@@ -426,28 +417,25 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
                     <TouchableOpacity>
                       <View
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
+                          flexDirection: 'row',
+                          alignItems: 'center',
                           padding: 5,
-                        }}
-                      >
+                        }}>
                         <Text
                           style={{
-                            color: "#fff",
+                            color: '#fff',
                             marginRight: 5,
-                          }}
-                        >
+                          }}>
                           {currentViewProfile?.followerCount
                             ? currentViewProfile?.followerCount
                             : 0}
                         </Text>
                         <Text
                           style={{
-                            color: "#fff",
-                            fontWeight: "bold",
+                            color: '#fff',
+                            fontWeight: 'bold',
                             fontSize: 17,
-                          }}
-                        >
+                          }}>
                           Follower
                         </Text>
                       </View>
@@ -456,28 +444,25 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
                     <TouchableOpacity>
                       <View
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
+                          flexDirection: 'row',
+                          alignItems: 'center',
                           padding: 5,
-                        }}
-                      >
+                        }}>
                         <Text
                           style={{
-                            color: "#fff",
+                            color: '#fff',
                             marginRight: 5,
-                          }}
-                        >
+                          }}>
                           {currentViewProfile?.followingCount
                             ? currentViewProfile?.followingCount
                             : 0}
                         </Text>
                         <Text
                           style={{
-                            color: "#fff",
-                            fontWeight: "bold",
+                            color: '#fff',
+                            fontWeight: 'bold',
                             fontSize: 17,
-                          }}
-                        >
+                          }}>
                           Following
                         </Text>
                       </View>
@@ -497,156 +482,35 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
                 </View>
               )}
 
-              <View
-                style={{
-                  width: "100%",
-                  alignItems: "center",
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    borderBottomColor: "rgba(0,0,0,0.1)",
-                    borderBottomWidth: 1,
-                    width: "90%",
-                    padding: 5,
-                  }}
-                >
-                  <Text
-                    style={{
-                      flex: 1,
-                      textAlign: "left",
-                      marginLeft: "20%",
-                      fontSize: 15,
-                    }}
-                  >
-                    {currentViewProfile?.gender === "female"
-                      ? "Diamonds"
-                      : "Coins"}
-                  </Text>
-                  <Text
-                    style={{
-                      flex: 1,
-                      textAlign: "left",
-                      marginLeft: "20%",
-                    }}
-                  >
-                    {currentViewProfile?.coins?.activeCoin || 0}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    borderBottomColor: "rgba(0,0,0,0.1)",
-                    borderBottomWidth: 1,
-                    width: "90%",
-                    padding: 5,
-                  }}
-                >
-                  <Text
-                    style={{
-                      flex: 1,
-                      textAlign: "left",
-                      marginLeft: "20%",
-                      fontSize: 15,
-                    }}
-                  >
-                    Country
-                  </Text>
-                  <Text
-                    style={{
-                      flex: 1,
-                      textAlign: "left",
-                      marginLeft: "20%",
-                    }}
-                  >
-                    {currentViewProfile?.country}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    borderBottomColor: "rgba(0,0,0,0.1)",
-                    borderBottomWidth: 1,
-                    width: "90%",
-                    padding: 5,
-                  }}
-                >
-                  <Text
-                    style={{
-                      flex: 1,
-                      textAlign: "left",
-                      marginLeft: "20%",
-                      fontSize: 15,
-                    }}
-                  >
-                    Date of birth
-                  </Text>
-                  <Text
-                    style={{ flex: 1, textAlign: "left", marginLeft: "20%" }}
-                  >
-                    {currentViewProfile?.dob?.substring(0, 10)}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    borderBottomColor: "rgba(0,0,0,0.1)",
-                    borderBottomWidth: 1,
-                    width: "90%",
-                    padding: 5,
-                  }}
-                >
-                  <Text
-                    style={{
-                      flex: 1,
-                      textAlign: "left",
-                      marginLeft: "20%",
-                      fontSize: 15,
-                    }}
-                  >
-                    Gender
-                  </Text>
-                  <Text
-                    style={{ flex: 1, textAlign: "left", marginLeft: "20%" }}
-                  >
-                    {currentViewProfile?.gender}
-                  </Text>
-                </View>
-              </View>
-
+              {/* ------ */}
+              <InfoBox userData={currentViewProfile} />
+              {/* ------ */}
               {!currentViewProfile?.isBlocked && (
                 <View
                   style={{
                     flex: 1,
                     marginTop: 30,
-                  }}
-                >
+                  }}>
                   <View>
                     <Text
                       style={{
                         fontSize: 15,
-                        color: "#000",
+                        color: '#000',
                         marginLeft: 20,
-                      }}
-                    >
+                      }}>
                       Photos
                     </Text>
                     <TouchableOpacity
                       style={{
-                        flexDirection: "row",
+                        flexDirection: 'row',
                         marginVertical: 10,
                         marginHorizontal: 20,
                       }}
                       onPress={() => {
-                        navigation.navigate("ScrollablePhotos", {
+                        navigation.navigate('ScrollablePhotos', {
                           images: currentViewProfile?.images,
                         });
-                      }}
-                    >
+                      }}>
                       {currentViewProfile?.avatar ? (
                         <ImageComp
                           URI={currentViewProfile?.avatar}
@@ -661,12 +525,11 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
                           style={{
                             width: 100,
                             height: 100,
-                            backgroundColor: "#555",
+                            backgroundColor: '#555',
                             borderRadius: 15,
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
                           <Entypo
                             name="folder-images"
                             color="white"
@@ -680,14 +543,12 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
                   <View
                     style={{
                       marginLeft: 20,
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         fontSize: 15,
-                        color: "#000",
-                      }}
-                    >
+                        color: '#000',
+                      }}>
                       Video
                     </Text>
                     <TouchableOpacity
@@ -697,14 +558,13 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
                             currentViewProfile?.videos?.length - 1
                           ]?.thumbnail
                         ) {
-                          navigation.navigate("ScrollableVideos", {
+                          navigation.navigate('ScrollableVideos', {
                             videos: currentViewProfile?.videos,
                           });
                         } else {
-                          Alert.alert("Alert", "No Videos");
+                          Alert.alert('Alert', 'No Videos');
                         }
-                      }}
-                    >
+                      }}>
                       {currentViewProfile?.videos?.[
                         currentViewProfile?.videos?.length - 1
                       ]?.thumbnail ? (
@@ -726,11 +586,10 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
                             width: 100,
                             height: 150,
                             borderRadius: 15,
-                            backgroundColor: "#555",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
+                            backgroundColor: '#555',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
                           <Entypo name="folder-video" color="#fff" size={45} />
                         </View>
                       )}
@@ -747,23 +606,20 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
             <View
               style={{
                 height: 100,
-              }}
-            >
+              }}>
               <TouchableOpacity
                 onPress={() => {
                   hanldeBlockUser();
                   handldeSheet(false);
-                }}
-              >
+                }}>
                 <Text
                   style={{
-                    textAlign: "center",
+                    textAlign: 'center',
                     fontSize: 16,
                     padding: 10,
                     borderBottomWidth: 1,
-                    borderColor: "rgba(0,0,0,0.2)",
-                  }}
-                >
+                    borderColor: 'rgba(0,0,0,0.2)',
+                  }}>
                   Block
                 </Text>
               </TouchableOpacity>
@@ -771,17 +627,15 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
                 onPress={() => {
                   handleReportUserSheet(true);
                   handldeSheet(false);
-                }}
-              >
+                }}>
                 <Text
                   style={{
-                    textAlign: "center",
+                    textAlign: 'center',
                     fontSize: 16,
                     padding: 10,
                     borderBottomWidth: 1,
-                    borderColor: "rgba(0,0,0,0.2)",
-                  }}
-                >
+                    borderColor: 'rgba(0,0,0,0.2)',
+                  }}>
                   Report
                 </Text>
               </TouchableOpacity>
@@ -790,12 +644,11 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
             <TouchableOpacity onPress={() => handldeSheet(false)}>
               <Text
                 style={{
-                  textAlign: "center",
+                  textAlign: 'center',
                   fontSize: 18,
                   padding: 10,
-                  fontWeight: "bold",
-                }}
-              >
+                  fontWeight: 'bold',
+                }}>
                 Close
               </Text>
             </TouchableOpacity>
@@ -804,34 +657,30 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
             <View
               style={{
                 height: 340,
-              }}
-            >
-              {REPORT_DATA.map((item) => {
+              }}>
+              {REPORT_DATA.map(item => {
                 return (
                   <TouchableOpacity
                     key={item?.title}
                     onPress={() => {
                       handleReportPress(item?.title);
                       handleReportUserSheet(false);
-                    }}
-                  >
+                    }}>
                     <View
                       style={{
-                        flexDirection: "row",
+                        flexDirection: 'row',
                         borderBottomWidth: 1,
-                        borderColor: "rgba(0,0,0,0.2)",
-                        alignItems: "center",
-                      }}
-                    >
+                        borderColor: 'rgba(0,0,0,0.2)',
+                        alignItems: 'center',
+                      }}>
                       <View
                         style={{
                           width: 25,
                           height: 25,
-                          justifyContent: "center",
-                          alignItems: "center",
+                          justifyContent: 'center',
+                          alignItems: 'center',
                           marginHorizontal: 15,
-                        }}
-                      >
+                        }}>
                         <AntDesign
                           name={item?.icon}
                           size={20}
@@ -840,11 +689,10 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
                       </View>
                       <Text
                         style={{
-                          textAlign: "left",
+                          textAlign: 'left',
                           fontSize: 16,
                           padding: 12,
-                        }}
-                      >
+                        }}>
                         {item?.title}
                       </Text>
                     </View>
@@ -856,12 +704,11 @@ const ViewOtherProfile = ({ route, navigation, CustomBack = true }) => {
             <TouchableOpacity onPress={() => handleReportUserSheet(false)}>
               <Text
                 style={{
-                  textAlign: "center",
+                  textAlign: 'center',
                   fontSize: 18,
                   padding: 10,
-                  fontWeight: "bold",
-                }}
-              >
+                  fontWeight: 'bold',
+                }}>
                 Close
               </Text>
             </TouchableOpacity>
@@ -889,44 +736,44 @@ export default ViewOtherProfile;
 const styles = StyleSheet.create({
   profile: {
     container: {
-      alignItems: "center",
+      alignItems: 'center',
     },
     avatarBox: {
       marginVertical: 20,
-      borderColor: "orange",
+      borderColor: 'orange',
       borderWidth: 5,
       borderRadius: 100,
       padding: 5,
     },
     username: {
       fontSize: 17,
-      fontWeight: "bold",
-      color: "rgba(0,0,0,0.7)",
+      fontWeight: 'bold',
+      color: 'rgba(0,0,0,0.7)',
     },
     bio: {
       fontSize: 17,
-      fontWeight: "normal",
-      color: "rgba(0,0,0,0.7)",
+      fontWeight: 'normal',
+      color: 'rgba(0,0,0,0.7)',
     },
     followingDetails: {
       marginTop: 5,
-      backgroundColor: "rgba(0,0,0,0.8)",
+      backgroundColor: 'rgba(0,0,0,0.8)',
       paddingHorizontal: 10,
-      flexDirection: "row",
-      alignItems: "center",
+      flexDirection: 'row',
+      alignItems: 'center',
       borderTopRightRadius: 15,
       borderBottomRightRadius: 15,
       borderTopLeftRadius: 15,
       borderBottomLeftRadius: 15,
     },
-    followingDetailHr: { backgroundColor: "#fff", width: 2, height: "80%" },
+    followingDetailHr: {backgroundColor: '#fff', width: 2, height: '80%'},
   },
 
   extraDetailsContainer: {
-    flexDirection: "row",
-    width: "75%",
+    flexDirection: 'row',
+    width: '75%',
     padding: 5,
-    borderColor: "rgba(15,15,15,0.1)",
+    borderColor: 'rgba(15,15,15,0.1)',
     borderBottomWidth: 1,
   },
 });

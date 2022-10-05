@@ -54,6 +54,8 @@ import ImageComp from '../../../components/ImageComp';
 import VideoPlayerOverlay from './components/VideoPlayerOverlay';
 import AudioMsg from './components/AudioMsg';
 import ImageOverlay from './components/ImageOverlay';
+import {formatAMPM, fromNowFormat, isToday} from '../../../utils/helper';
+import TextMsg from './components/TextMsg';
 
 const audioSet = {
   AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -763,6 +765,14 @@ const ChatMessage = ({
             borderRadius: 5,
           }}
         />
+        <Text
+          style={{
+            alignSelf: item?.msgFrom === user?.id ? 'flex-end' : 'flex-start',
+          }}>
+          {isToday(item?.date)
+            ? fromNowFormat(item?.date)
+            : formatAMPM(new Date(item?.date))}
+        </Text>
       </TouchableOpacity>
     );
   }
@@ -836,6 +846,14 @@ const ChatMessage = ({
             <Ionicons name="play-circle-outline" size={60} color="#fff" />
           </View>
         </TouchableOpacity>
+        <Text
+          style={{
+            alignSelf: item?.msgFrom === user?.id ? 'flex-end' : 'flex-start',
+          }}>
+          {isToday(item?.date)
+            ? fromNowFormat(item?.date)
+            : formatAMPM(new Date(item?.date))}
+        </Text>
       </View>
     );
   }
@@ -849,7 +867,6 @@ const ChatMessage = ({
         <View
           style={{
             alignSelf: isSideLeft ? 'flex-start' : 'flex-end',
-            // backgroundColor: item?.msgFrom === user.id ? '#222' : '#23a12f',
             padding: 5,
             width: 80,
             maxWidth: 80,
@@ -859,9 +876,6 @@ const ChatMessage = ({
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          {/* <Text>
-        {item.gift.title}
-      </Text> */}
           {item?.gift?.iconUrl ? (
             <ImageComp
               imageContainerStyles={{
@@ -893,74 +907,21 @@ const ChatMessage = ({
               source={require('../../../assets/icons/gifts/gift1.png')}
             />
           )}
+
+          <Text
+            style={{
+              color: '#000',
+              alignSelf: isSideLeft ? 'flex-start' : 'flex-end',
+            }}>
+            {isToday(item?.date)
+              ? fromNowFormat(item?.date)
+              : formatAMPM(new Date(item?.date))}
+          </Text>
         </View>
       </View>
     );
   } else {
-    return (
-      <View
-        style={{
-          backgroundColor: isSideLeft ? '#222' : '#23a12f',
-          alignSelf: isSideLeft ? 'flex-start' : 'flex-end',
-          padding: 5,
-          width: '60%',
-          maxWidth: 300,
-          borderRadius: 10,
-          marginVertical: 10,
-          marginTop: 15,
-        }}>
-        {/* messageTIP */}
-        {isSideLeft ? (
-          <Octicons
-            style={{
-              position: 'absolute',
-              zIndex: -1,
-              top: -22,
-            }}
-            name="triangle-right"
-            size={50}
-            color="#222"
-          />
-        ) : (
-          <Octicons
-            style={{
-              position: 'absolute',
-              zIndex: -1,
-              top: -22,
-              right: 0,
-            }}
-            name="triangle-left"
-            size={50}
-            color="#23a12f"
-          />
-        )}
-
-        <Text style={{color: '#fff', padding: 5, fontSize: 15}}>
-          {/* {item.message} */}
-          {item?.msg || item?.content}
-        </Text>
-        {/* status */}
-        <View
-          style={{
-            height: 15,
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}>
-          <Text style={{color: '#fff', fontSize: 12, marginRight: 10}}>
-            {item?.createdAt
-              ? new Date(item?.createdAt).toLocaleTimeString()
-              : null}
-          </Text>
-          {/* <MessageStatus
-            // status={"SEND"}
-            // status={"RECIVED"}
-            // status={"SEEN"}
-            status={status}
-          /> */}
-        </View>
-      </View>
-    );
+    return <TextMsg messageIdx={index} isSideLeft={isSideLeft} item={item} />;
   }
 };
 

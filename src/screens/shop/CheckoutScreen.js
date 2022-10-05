@@ -1,23 +1,12 @@
 import React from 'react';
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import HeaderBackTitle from '../../components/HeaderBackTitle';
-
-import {useDispatch, useSelector} from 'react-redux';
-import {REMOVE_SELECTED_COIN_FOR_PURCHASE} from '../../redux/reducers/actionTypes';
+import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/core';
 
 const CheckoutScreen = () => {
   const {coin} = useSelector(state => state);
-  const dispatch = useDispatch(null);
   const navigation = useNavigation(null);
-
-  const handleUnmount = () => {
-    dispatch({type: REMOVE_SELECTED_COIN_FOR_PURCHASE});
-  };
-
-  React.useEffect(() => {
-    return () => handleUnmount();
-  }, []);
 
   return (
     <ScrollView style={{flex: 1}}>
@@ -81,9 +70,6 @@ const CheckoutScreen = () => {
             height: 2,
             marginVertical: 5,
           }}></View>
-
-        {/* ---------------------- */}
-        {/* BTN */}
       </View>
     </ScrollView>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Image, Alert} from 'react-native';
 import {fromLocalStorage} from '../../utils/helper';
 import {useDispatch, useSelector} from 'react-redux';
 import {LOAD_PROFILE} from '../../redux/reducers/actionTypes';

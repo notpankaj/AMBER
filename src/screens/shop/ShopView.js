@@ -192,7 +192,7 @@ const ShopView = (props) => {
   const [coinsData, setCoinsData] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
 
-  const { auth } = useSelector((state) => state);
+  const { auth, coin } = useSelector((state) => state);
   const paymentOptionSheetRef = React.createRef();
 
   const handldeSheet = (bool) => {
@@ -301,6 +301,7 @@ const ShopView = (props) => {
 
   // after payment success
   const handlePurchasedComplete = async (purchase) => {
+    if (!GOOGLE_PLAY_PRODUCT_ID) return;
     const payload = {
       token: auth?.accessToken,
       userID: auth?.user?.id,
@@ -308,6 +309,8 @@ const ShopView = (props) => {
       ITEM: GOOGLE_PLAY_PRODUCT_ID,
       OS: Platform.OS,
     };
+    console.log("THIS ONE", GOOGLE_PLAY_PRODUCT_ID);
+    console.log("THIS TWO", coin?.selectedCoinForPurchase);
     try {
       const res = await api_inAppPurchase(payload);
       console.log(res);

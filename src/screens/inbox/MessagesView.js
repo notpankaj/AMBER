@@ -135,7 +135,7 @@ const UserListItem = ({ item, index, navigation }) => {
           </Text>
           <Text style={{ fontSize: 14, color: "#222" }}>{item?.bio}</Text>
           <Text style={{ fontSize: 14, color: "#222" }}>
-            coins {item?.coins?.activeCoin}
+            coins {item?.coins?.activeCoin || "0"}
           </Text>
         </View>
       </View>

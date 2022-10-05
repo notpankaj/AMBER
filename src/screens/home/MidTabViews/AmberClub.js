@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Text,
   View,
@@ -33,14 +33,29 @@ import Geolocation from "@react-native-community/geolocation";
 import {
   api_getFollowingList,
   api_sendVideoCallInvitationToRandom,
+  SOCKET_URL,
 } from "../../../api_services";
 import Fontisto from "react-native-vector-icons/Fontisto";
-
+import SocketIOClient from "socket.io-client";
 const countries = countryCode?.map((item, idx) => ({
   _id: idx,
   name: item?.name,
   isoCode: item?.code ? item?.code?.toLowerCase() : "",
 }));
+
+function sortUserByLiveStatus(data) {
+  const onlineU = [];
+  const offlineU = [];
+
+  for (u of data) {
+    if (u?.keyOnline === "Offline") {
+      offlineU.push(u);
+    } else {
+      onlineU.push(u);
+    }
+  }
+  return [...onlineU, ...offlineU];
+}
 
 const AmberClubSelection = ({
   setActiveTab,
@@ -285,11 +300,14 @@ const AmberClubSelection = ({
 const AmberClub = () => {
   const { auth, users } = useSelector((state) => state);
   const { user, accessToken } = auth;
+  let socketRef = useRef(null).current;
 
   const [isSelectCountryOpen, setIsSelectCountryOpen] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState("POPULAR");
   const [forYouUsersLoading, setForYouUsersLoading] = React.useState(false);
   const [forYouUsersList, setForYouUsersList] = React.useState([]);
+
+  const [liveUser, setLiveUser] = React.useState([]);
 
   const {
     loading,
@@ -426,7 +444,7 @@ const AmberClub = () => {
         throw new Error(response?.error || "something went worng");
       }
     } catch (error) {
-      Alert.alert("Alert", error.message);
+      // Alert.alert("Alert", error.message);
     } finally {
       setForYouUsersLoading(false);
     }
@@ -483,6 +501,36 @@ const AmberClub = () => {
     }
   }, [activeTab, filter_country]);
 
+  // ****
+
+  // ? --->
+  const handleOnlineUsers = (data) => {
+    console.log("userStack", data);
+    setLiveUser(sortUserByLiveStatus(data));
+  };
+  // ? --->
+
+  React.useEffect(() => {
+    socketRef = SocketIOClient(SOCKET_URL, {
+      transports: ["websocket"],
+      query: {
+        token: accessToken,
+      },
+    });
+
+    socketRef.on("userStack", handleOnlineUsers);
+
+    const params = {
+      // pageNo: 1,
+      // pageSize: 10,
+      // list: true,
+      gender: user?.gender,
+    };
+    socketRef.emit("get-all-users", params);
+  }, []);
+
+  // ****
+
   return (
     <View style={{ flex: 1, marginTop: 10, paddingBottom: 70 }}>
       <AmberClubSelection
@@ -519,11 +567,12 @@ const AmberClub = () => {
           justifyContent: "center",
           alignItems: "center",
         }}
-        data={
-          forYouUsersList.length
-            ? forYouUsersList
-            : userList.filter((item) => !item?.isBlocked)
-        }
+        // data={
+        //   forYouUsersList.length
+        //     ? forYouUsersList
+        //     : userList.filter((item) => !item?.isBlocked)
+        // }
+        data={liveUser}
         ListEmptyComponent={
           loading || forYouUsersLoading ? (
             <View
@@ -542,7 +591,7 @@ const AmberClub = () => {
             </Text>
           )
         }
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item?.id || item._id}
         numColumns={2}
         renderItem={({ item, index }) => (
           <LiveVideoCard index={index} item={item} />

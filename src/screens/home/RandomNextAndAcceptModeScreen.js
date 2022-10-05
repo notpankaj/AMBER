@@ -7,25 +7,25 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import React from "react";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+} from 'react-native';
+import React from 'react';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 import {
   api_usersRandom,
   generate_rtcToken,
   SOCKET_URL,
-} from "../../api_services";
-import SocketIOClient from "socket.io-client";
+} from '../../api_services';
+import SocketIOClient from 'socket.io-client';
 
-import Carousel from "react-native-snap-carousel";
-import Spin from "react-native-spinkit";
-import ImageComp from "../../components/ImageComp";
-import { getRandomLoacalImage } from "./images";
-import SoundPlayer from "react-native-sound-player";
+// import Carousel from "react-native-snap-carousel";
+import Spin from 'react-native-spinkit';
+import ImageComp from '../../components/ImageComp';
+import {getRandomLoacalImage} from './images';
+import SoundPlayer from 'react-native-sound-player';
 const CLEAR_IMAGE =
-  "https://images.unsplash.com/photo-1611042553484-d61f84d22784?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80";
+  'https://images.unsplash.com/photo-1611042553484-d61f84d22784?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80';
 
 let MY_TIMEOUT = null;
 
@@ -33,31 +33,31 @@ let _onFinishedPlayingSubscription;
 let _onFinishedLoadingSubscription;
 let _onFinishedLoadingURLSubscription;
 let _onFinishedLoadingFileSubscription;
-const RandomNextAndAcceptModeScreen = ({ route }) => {
+const RandomNextAndAcceptModeScreen = ({route}) => {
   const navigation = useNavigation(null);
 
-  const { auth, coin } = useSelector((s) => s);
+  const {auth, coin} = useSelector(s => s);
   const socketRef = React.useRef();
 
-  const { randomData, handleStopRandomBgMusic } = route?.params;
+  const {randomData, handleStopRandomBgMusic} = route?.params;
   const [loading, setLoading] = React.useState(false);
   const [loading2, setLoading2] = React.useState(false);
   const [activeUser, setActiveUser] = React.useState(null);
   const [imageLoaders, setImageLoaders] = React.useState([]);
   const [showImageSilder, setShowImageSilder] = React.useState(false);
   const [randomBlurImages, setRandomBlurImages] = React.useState(
-    getRandomLoacalImage(4)
+    getRandomLoacalImage(4),
   );
 
   const _carousel = React.useRef();
-  console.log(randomData, "randomData");
-  console.log({ imageLoaders, activeUser });
+  console.log(randomData, 'randomData');
+  console.log({imageLoaders, activeUser});
 
   const handleNextPress = async () => {
     setTimeoutFun();
     setShowImageSilder(true);
     setRandomBlurImages(getRandomLoacalImage(4));
-    console.log("in next");
+    console.log('in next');
     setLoading(true);
     try {
       const payload = {
@@ -73,10 +73,10 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
         removeTimeoutFun();
         setTimeoutFun();
       } else {
-        throw new Error(res?.error || "something went wrong!");
+        throw new Error(res?.error || 'something went wrong!');
       }
     } catch (error) {
-      Alert.alert("Alert", error?.message);
+      Alert.alert('Alert', error?.message);
     } finally {
       setShowImageSilder(false);
       setLoading(false);
@@ -95,20 +95,20 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
 
   const hitCallUserSocket = () => {
     socketRef.current = SocketIOClient(SOCKET_URL, {
-      transports: ["websocket"],
+      transports: ['websocket'],
       query: {
         token: auth?.accessToken,
       },
     });
-    console.log({ socketRef });
+    console.log({socketRef});
     const dataObj = {
       channelName: auth?.user?.id,
       receiverId: activeUser?.id,
       callerId: auth?.user?.id,
       username: auth?.user?.username,
     };
-    socketRef.current.emit("callUser", dataObj);
-    console.log("::::::::::::::::CALL USER EMITTED  with", dataObj);
+    socketRef.current.emit('callUser', dataObj);
+    console.log('::::::::::::::::CALL USER EMITTED  with', dataObj);
   };
 
   const getTokenForVideoCall = async () => {
@@ -121,7 +121,7 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
       });
 
       if (response.isSuccess && response.statusCode === 200) {
-        console.log(response, "generate_rtcToken");
+        console.log(response, 'generate_rtcToken');
         const api_uid = response.data.userId;
         const api_agora_token = response.data.token;
         const channel_id = auth?.user?.id;
@@ -130,21 +130,21 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
         if (api_uid && api_agora_token && channel_id) {
           hitCallUserSocket();
           handleRemoveAllAudioListeners();
-          navigation.navigate("LiveVideoCall", {
+          navigation.navigate('LiveVideoCall', {
             api_uid,
             api_agora_token,
             channel_id,
-            call_type: "CALLER",
-            call_mode: "NORMAL",
+            call_type: 'CALLER',
+            call_mode: 'NORMAL',
             callingToUserId: activeUser?.id,
             call_rate,
           });
         }
       } else {
-        Alert.alert("Error", "failed to generate agora token");
+        Alert.alert('Error', 'failed to generate agora token');
       }
     } catch (error) {
-      Alert.alert("Error", error?.message || "failed to generate agora token");
+      Alert.alert('Error', error?.message || 'failed to generate agora token');
     } finally {
       setLoading2(false);
     }
@@ -153,9 +153,9 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
   const handleAcceptPress = () => {
     clearTimeout(MY_TIMEOUT);
     handlePlayTap();
-    console.log("HHHH");
+    console.log('HHHH');
     // for female
-    if (auth?.user?.gender === "female") {
+    if (auth?.user?.gender === 'female') {
       getTokenForVideoCall();
       return;
     }
@@ -164,16 +164,16 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
     if (coin?.currectCoin > 59) {
       getTokenForVideoCall();
     } else {
-      Alert.alert("Alert", "you dont have enough coin to call,", [
+      Alert.alert('Alert', 'you dont have enough coin to call,', [
         {
-          text: "Buy Now",
-          onPress: () => navigation.navigate("Shop"),
-          style: "cancel",
+          text: 'Buy Now',
+          onPress: () => navigation.navigate('Shop'),
+          style: 'cancel',
         },
         {
-          text: "Later",
+          text: 'Later',
           onPress: () => {},
-          style: "cancel",
+          style: 'cancel',
         },
       ]);
     }
@@ -192,9 +192,9 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
 
   const handlePlayTap = async () => {
     try {
-      SoundPlayer.playSoundFile("tap", "wav");
+      SoundPlayer.playSoundFile('tap', 'wav');
     } catch (error) {
-      console.log(error, "handlePlayTap");
+      console.log(error, 'handlePlayTap');
     }
   };
 
@@ -208,28 +208,28 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
   };
   React.useEffect(() => {
     _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
-      "FinishedPlaying",
-      ({ success }) => {
-        console.log("finished playing", success);
-      }
+      'FinishedPlaying',
+      ({success}) => {
+        console.log('finished playing', success);
+      },
     );
     _onFinishedLoadingSubscription = SoundPlayer.addEventListener(
-      "FinishedLoading",
-      ({ success }) => {
-        console.log("finished loading", success);
-      }
+      'FinishedLoading',
+      ({success}) => {
+        console.log('finished loading', success);
+      },
     );
     _onFinishedLoadingFileSubscription = SoundPlayer.addEventListener(
-      "FinishedLoadingFile",
-      ({ success, name, type }) => {
-        console.log("finished loading file", success, name, type);
-      }
+      'FinishedLoadingFile',
+      ({success, name, type}) => {
+        console.log('finished loading file', success, name, type);
+      },
     );
     _onFinishedLoadingURLSubscription = SoundPlayer.addEventListener(
-      "FinishedLoadingURL",
-      ({ success, url }) => {
-        console.log("finished loading url", success, url);
-      }
+      'FinishedLoadingURL',
+      ({success, url}) => {
+        console.log('finished loading url', success, url);
+      },
     );
 
     return () => {
@@ -240,12 +240,11 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
   return (
     <View
       style={{
-        backgroundColor: "#333",
+        backgroundColor: '#333',
         flex: 1,
-        width: "100%",
-      }}
-    >
-      {showImageSilder ? (
+        width: '100%',
+      }}>
+      {/* {showImageSilder ? (
         <Carousel
           autoplay={true}
           loop={true}
@@ -279,16 +278,15 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
           sliderWidth={Dimensions.get("window").width}
           itemWidth={Dimensions.get("window").width}
         />
-      ) : null}
+      ) : null} */}
       {loading || activeUser?.avatar ? (
         showImageSilder ? (
           <View
             style={{
-              backgroundColor: "#000",
+              backgroundColor: '#000',
               ...StyleSheet.absoluteFillObject,
               zIndex: -1,
-            }}
-          ></View>
+            }}></View>
         ) : activeUser?.avatar ? (
           <ImageComp
             URI={activeUser?.avatar}
@@ -299,7 +297,7 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
           />
         ) : (
           <ImageBackground
-            source={{ uri: CLEAR_IMAGE }}
+            source={{uri: CLEAR_IMAGE}}
             style={{
               ...StyleSheet.absoluteFillObject,
               zIndex: -1,
@@ -309,7 +307,7 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
         )
       ) : (
         <ImageBackground
-          source={{ uri: CLEAR_IMAGE }}
+          source={{uri: CLEAR_IMAGE}}
           style={{
             ...StyleSheet.absoluteFillObject,
             zIndex: -1,
@@ -320,27 +318,25 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
       {/* header */}
       <View
         style={{
-          width: "100%",
+          width: '100%',
           height: 80,
-          justifyContent: "center",
+          justifyContent: 'center',
           padding: 15,
-        }}
-      >
+        }}>
         <TouchableOpacity
           onPress={() => {
             handleStopRandomBgMusic && handleStopRandomBgMusic();
             navigation.goBack();
           }}
           style={{
-            backgroundColor: "rgba(255,255,255,0.3)",
+            backgroundColor: 'rgba(255,255,255,0.3)',
             width: 33,
             height: 33,
-            justifyContent: "center",
-            alignItems: "center",
+            justifyContent: 'center',
+            alignItems: 'center',
             borderRadius: 100,
-          }}
-        >
-          <Ionicons name={"arrow-back"} size={30} color={"#000"} />
+          }}>
+          <Ionicons name={'arrow-back'} size={30} color={'#000'} />
         </TouchableOpacity>
         {/* header end */}
       </View>
@@ -348,13 +344,12 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
 
       <View
         style={{
-          width: "100%",
+          width: '100%',
           height: 200,
-          position: "absolute",
+          position: 'absolute',
           bottom: 70,
-          alignItems: "center",
-        }}
-      >
+          alignItems: 'center',
+        }}>
         {loading ? (
           <>
             {/* searchIocn */}
@@ -362,64 +357,59 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
               style={{
                 height: 100,
                 width: 100,
-                backgroundColor: "#FFC75F",
-                position: "absolute",
+                backgroundColor: '#FFC75F',
+                position: 'absolute',
                 top: -50,
                 borderRadius: 100,
                 zIndex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
               <Spin type="9CubeGrid" isVisible={true} color="#fff" size={30} />
             </View>
             {/* searchIocn end */}
             <View
               style={{
-                width: "80%",
+                width: '80%',
                 height: 200,
                 borderTopLeftRadius: 20,
                 borderTopRightRadius: 20,
-                backgroundColor: "#FFC75F",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+                backgroundColor: '#FFC75F',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <Text
                 style={{
                   fontSize: 16,
-                  fontWeight: "bold",
-                  fontStyle: "italic",
-                  color: "rgba(0,0,0,0.6)",
-                }}
-              >
+                  fontWeight: 'bold',
+                  fontStyle: 'italic',
+                  color: 'rgba(0,0,0,0.6)',
+                }}>
                 Searching...
               </Text>
               <View
                 style={{
-                  backgroundColor: "rgba(255,255,255,0.5)",
-                  width: "90%",
+                  backgroundColor: 'rgba(255,255,255,0.5)',
+                  width: '90%',
                   height: 60,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "row",
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'row',
                   borderRadius: 10,
                   marginTop: 25,
-                }}
-              >
+                }}>
                 <View
                   style={{
-                    backgroundColor: "#D43725",
+                    backgroundColor: '#D43725',
                     width: 20,
                     height: 20,
                     borderRadius: 100,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
                   <Ionicons name="alert" size={15} color="#fff" />
                 </View>
-                <Text style={{ padding: 5, color: "rgba(0,0,0,0.6)" }}>
+                <Text style={{padding: 5, color: 'rgba(0,0,0,0.6)'}}>
                   offensive language is not tollorated
                 </Text>
               </View>
@@ -428,66 +418,61 @@ const RandomNextAndAcceptModeScreen = ({ route }) => {
         ) : (
           <View
             style={{
-              width: "80%",
+              width: '80%',
               height: 200,
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <Text
               style={{
-                color: "#fff",
+                color: '#fff',
                 marginBottom: 20,
-                fontWeight: "bold",
+                fontWeight: 'bold',
                 fontSize: 20,
-                textShadowColor: "rgba(0, 0, 0, 1)",
-                textShadowOffset: { 1: -1, 0: 1 },
+                textShadowColor: 'rgba(0, 0, 0, 1)',
+                textShadowOffset: {1: -1, 0: 1},
                 textShadowRadius: 4,
-              }}
-            >
-              {activeUser?.username || "no name"}
+              }}>
+              {activeUser?.username || 'no name'}
             </Text>
             <TouchableOpacity
               style={{
-                backgroundColor: "#2C73D2",
+                backgroundColor: '#2C73D2',
                 borderRadius: 50,
                 padding: 5,
-                width: "75%",
-                justifyContent: "center",
-                alignItems: "center",
+                width: '75%',
+                justifyContent: 'center',
+                alignItems: 'center',
                 marginVertical: 5,
               }}
-              onPress={handleAcceptPress}
-            >
+              onPress={handleAcceptPress}>
               <Text
                 style={{
-                  color: "#fff",
-                  fontWeight: "bold",
+                  color: '#fff',
+                  fontWeight: 'bold',
                   fontSize: 15,
-                }}
-              >
-                {loading2 ? "loading... " : "Accept"}
+                }}>
+                {loading2 ? 'loading... ' : 'Accept'}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{
                 borderRadius: 50,
                 padding: 5,
-                width: "75%",
-                justifyContent: "center",
-                alignItems: "center",
+                width: '75%',
+                justifyContent: 'center',
+                alignItems: 'center',
                 marginVertical: 5,
               }}
               onPress={() => {
                 handlePlayTap();
-                setTimeout(() => {
-                  handleNextPress();
-                }, 5000);
-              }}
-            >
-              <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 15 }}>
+                // setTimeout(() => {
+                handleNextPress();
+                // }, 5000);
+              }}>
+              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 15}}>
                 Next
               </Text>
             </TouchableOpacity>

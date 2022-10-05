@@ -4,9 +4,7 @@ import SoundPlayer from "react-native-sound-player";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useSelector } from "react-redux";
-
-// item.attachment from socket
-// from api
+import { formatAMPM, fromNowFormat, isToday } from "../../../../utils/helper";
 
 const AudioMsg = ({ item }) => {
   const { auth } = useSelector((s) => s);
@@ -105,6 +103,11 @@ const AudioMsg = ({ item }) => {
           <AntDesign name="play" size={35} color="#222" />
         )}
       </TouchableOpacity>
+      <Text style={{ fontSize: 8, marginTop: 4 }}>
+        {isToday(item?.date)
+          ? fromNowFormat(item?.date)
+          : formatAMPM(new Date(item?.date))}
+      </Text>
     </View>
   );
 };

@@ -17,7 +17,7 @@ import {
   api_userDeleteImageOrVideo,
 } from '../../../api_services';
 import {TapGestureHandler} from 'react-native-gesture-handler';
-import Carousel from 'react-native-snap-carousel';
+// import Carousel from 'react-native-snap-carousel';
 import {useRef} from 'react';
 const {width, height} = Dimensions.get('window');
 const PhotoBox = ({item, index, setFullPreviewImage, setCarouselShowIndex}) => {
@@ -115,7 +115,7 @@ const PhotoGallary = ({
               height: '100%',
               zIndex: 10,
             }}>
-            <Carousel
+            {/* <Carousel
               ref={carouselRef.current}
               data={images}
               firstItem={carouselShowIndex}
@@ -178,7 +178,7 @@ const PhotoGallary = ({
               }}
               sliderWidth={300}
               itemWidth={Dimensions.get('window').width}
-            />
+            /> */}
           </View>
         </TapGestureHandler>
       )}

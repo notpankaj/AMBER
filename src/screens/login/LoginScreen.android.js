@@ -1,5 +1,4 @@
-import React, {useEffect} from 'react';
-
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -18,19 +17,21 @@ import LinearGradient from 'react-native-linear-gradient';
 import globalStyles from '../../styles/globalStyles';
 import * as yup from 'yup';
 import {Formik} from 'formik';
-import {api_socialLogin, DEV_MODE} from '../../api_services';
+import {api_login, api_socialLogin, DEV_MODE} from '../../api_services';
 import Toast from 'react-native-toast-message';
 import {login} from '../../redux/actions/auth.action';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   LOGIN_REFRESH,
   LOGIN_SUCCESS,
+  SET_FOLLOWER_COUNT,
+  SET_FOLLOWING_COUNT,
   SET_USER_COORDS,
 } from '../../redux/reducers/actionTypes';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import auth from '@react-native-firebase/auth';
+// import auth from '@react-native-firebase/auth';
 
 import Geolocation from '@react-native-community/geolocation';
 
@@ -48,7 +49,7 @@ const loginValidationSchema = yup.object().shape({
 const LoginScreen = ({navigation}) => {
   const [socialGoogleLoading, setSocialGoogleLoading] = React.useState(false);
   const [socialFbLoading, setSocialFbLoading] = React.useState(false);
-
+  const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
   const dispatch = useDispatch();
   const {loading, error, user} = useSelector(state => state.auth);
   const handleToast = (type = 'success', text1 = 'Success', text2 = '') => {
@@ -59,10 +60,28 @@ const LoginScreen = ({navigation}) => {
     });
   };
 
+  console.log({toggleCheckBox});
+
   function onAuthStateChanged(user) {
     console.log('oAuth user', user);
   }
   setSocialFbLoading;
+
+  const populateFollowCounts = user => {
+    if (!user) return;
+    const {followerCount, followingCount} = user;
+    Alert.alert('', JSON.stringify({followerCount, followingCount}));
+    if (followerCount) {
+      dispatch({type: SET_FOLLOWER_COUNT, payload: {count: followerCount}});
+    }
+
+    if (followingCount) {
+      dispatch({
+        type: SET_FOLLOWING_COUNT,
+        payload: {count: followingCount},
+      });
+    }
+  };
 
   useEffect(() => {
     if (error) {
@@ -91,14 +110,14 @@ const LoginScreen = ({navigation}) => {
     }
 
     let fcmToken = await AsyncStorage.getItem('fcmToken');
-    if (fcmToken) {
-      dispatch(login({...payload, deviceToken: fcmToken}));
-    } else {
-      Alert.alert(
-        'Alert',
-        'Authentication Failed!! , because your device failed to generate device token',
-      );
-    }
+    // if (fcmToken) {
+    dispatch(login({...payload, deviceToken: fcmToken}));
+    // } else {
+    //   Alert.alert(
+    //     'Alert',
+    //     'Authentication Failed!! , because your device failed to generate device token',
+    //   );
+    // }
   };
 
   const getLocation = async () => {
@@ -162,9 +181,9 @@ const LoginScreen = ({navigation}) => {
   };
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    // const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     checkLocationPermission();
-    return subscriber; // unsubscribe on unmount
+    // return subscriber; // unsubscribe on unmount
   }, []);
 
   const hitSocialLogin = async payload => {
@@ -286,7 +305,15 @@ const LoginScreen = ({navigation}) => {
       validateOnMount={true}
       validationSchema={loginValidationSchema}
       onSubmit={values => handleLogin(values)}>
-      {({handleChange, handleBlur, handleSubmit, values, touched, errors}) => (
+      {({
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        values,
+        touched,
+        isValid,
+        errors,
+      }) => (
         <ScrollView>
           <View style={styles.container}>
             {/* image */}
@@ -301,13 +328,12 @@ const LoginScreen = ({navigation}) => {
 
             {/* loginForm */}
             <View style={styles.loginForm}>
+              {/* username */}
               <TextInput
                 style={styles.input}
                 placeholder="Username"
                 placeholderTextColor="rgba(0,0,0,0.4)"
-                // onChangeText={(value) => setUsername(value)}
                 onChangeText={handleChange('username')}
-                // value={username}
                 value={values.username}
                 onBlur={handleBlur('username')}
               />
@@ -361,7 +387,6 @@ const LoginScreen = ({navigation}) => {
                     New to Amber?
                     <Text
                       onPress={() => {
-                        // navigation.navigate('SignUp');
                         navigation.navigate('SignUpUsername');
                       }}
                       style={styles.loginFormExtra.secondaryColor}>

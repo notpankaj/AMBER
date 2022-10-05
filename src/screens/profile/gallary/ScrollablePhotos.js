@@ -13,7 +13,7 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
 import {TapGestureHandler} from 'react-native-gesture-handler';
-import Carousel from 'react-native-snap-carousel';
+// import Carousel from 'react-native-snap-carousel';
 import {useState} from 'react';
 import {
   api_userDeleteImageOrVideo,
@@ -103,7 +103,7 @@ const ScrollablePhotos = ({route}) => {
             flex: 1,
             backgroundColor: '#000',
           }}>
-          <Carousel
+          {/* <Carousel
             ref={carouselRef.current}
             data={images}
             firstItem={carouselShowIndex}
@@ -113,15 +113,11 @@ const ScrollablePhotos = ({route}) => {
                 <View
                   style={{
                     flex: 1,
-                    // marginTop: '40%',
                   }}>
                   <View
                     style={{
                       width: '100%',
                       height: '99%',
-                      // borderColor: '#fff',
-                      // borderWidth: 15,
-                      // borderTopWidth: 30,
                       borderRadius: 5,
                       shadowColor: '#000',
                       shadowOffset: {width: -2, height: 4},
@@ -129,20 +125,9 @@ const ScrollablePhotos = ({route}) => {
                       shadowRadius: 3,
                       elevation: 10,
                       zIndex: 10,
-                      // backgroundColor: 'lightgray',
                       backgroundColor: '#000',
                     }}>
-                    {/* <Image
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        zIndex: 10,
-                      }}
-                      resizeMode="contain"
-                      source={{
-                        uri: data.item.name,
-                      }}
-                    /> */}
+              
                     <ImageComp
                       URI={data.item.name}
                       imageStyles={{
@@ -186,7 +171,7 @@ const ScrollablePhotos = ({route}) => {
             }}
             sliderWidth={Dimensions.get('window').width}
             itemWidth={Dimensions.get('window').width}
-          />
+          /> */}
         </View>
       </TapGestureHandler>
     </View>
