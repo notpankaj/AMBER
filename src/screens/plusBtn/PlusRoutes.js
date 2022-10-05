@@ -1,6 +1,6 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-// import HomeScreen from '../home/HomeScreen';
+import HomeScreen from '../home/HomeScreen';
 import RandomNextAndAcceptModeScreen from '../home/RandomNextAndAcceptModeScreen';
 import RandomUsersScreen from '../home/RandomUsersScreen';
 
@@ -12,11 +12,11 @@ const PlusRoutes = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      {/* <Stack.Screen
+      <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
         initialParams={{activeTab: 'RANDOM'}}
-      /> */}
+      />
       <Stack.Screen
         name="RandomNextAndAcceptModeScreen"
         component={RandomNextAndAcceptModeScreen}

@@ -12,8 +12,8 @@ import {useSelector} from 'react-redux';
 import ViewOtherProfile from './screens/profile/ViewOtherProfile';
 import ChatScreen from './screens/inbox/chat/ChatScreen';
 import LiveVideoCall from './screens/video_call/LiveVideoCall';
-// import CallIncoming from "./screens/video_call/CallIncoming";
-// import SubmitBankDetails from "./screens/extra/SubmitBankDetails";
+import CallIncoming from './screens/video_call/CallIncoming';
+import SubmitBankDetails from './screens/extra/SubmitBankDetails';
 import requestUserPermission from './utils/notificationServices';
 import ForgetPassword from './screens/recover/ForgetPassword';
 import CreateNewPassword from './screens/recover/CreateNewPassword';
@@ -31,7 +31,7 @@ import {
 import ScrollablePhotos from './screens/profile/gallary/ScrollablePhotos';
 import ScrollableVideos from './screens/profile/gallary/ScrollableVideos';
 
-// import PayPalMeScreen from "./screens/shop/PayPalMeScreen";
+import PayPalMeScreen from './screens/shop/PayPalMeScreen';
 const Stack = createStackNavigator();
 const Routes = () => {
   const [isSplashActive, setIsSplashActive] = useState(true);
@@ -92,14 +92,14 @@ const Routes = () => {
           <Stack.Screen name="ViewOtherProfile" component={ViewOtherProfile} />
           <Stack.Screen name="ScrollablePhotos" component={ScrollablePhotos} />
           <Stack.Screen name="ScrollableVideos" component={ScrollableVideos} />
-          {/* <Stack.Screen name="PayPalMeScreen" component={PayPalMeScreen} /> */}
+          <Stack.Screen name="PayPalMeScreen" component={PayPalMeScreen} />
           <Stack.Screen name="ChatScreen" component={ChatScreen} />
           <Stack.Screen name="LiveVideoCall" component={LiveVideoCall} />
-          {/* <Stack.Screen name="CallIncoming" component={CallIncoming} /> */}
-          {/* <Stack.Screen
+          <Stack.Screen name="CallIncoming" component={CallIncoming} />
+          <Stack.Screen
             name="SubmitBankDetails"
             component={SubmitBankDetails}
-          />  */}
+          />
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>

@@ -316,7 +316,7 @@ const Profile = ({navigation}) => {
                   alignItems: 'center',
                   borderRadius: 100,
                 }}>
-                <AntDesign name="meh" size={120} />
+                <Icon name="meh" size={120} />
               </View>
             )}
           </View>

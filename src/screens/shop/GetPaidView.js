@@ -6,7 +6,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  ScrollView,
   Alert,
   ActivityIndicator,
 } from 'react-native';
@@ -15,7 +14,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {api_redeemRequest} from '../../api_services';
 import {colors} from '../../constants';
 import ActionSheet, {SheetManager} from 'react-native-actions-sheet';
-import {UPDATE_MY_PROFILE} from '../../redux/reducers/actionTypes';
 import {createRef} from 'react';
 const ShowGemCount = ({gemCount}) => {
   return (
@@ -313,34 +311,6 @@ const GetPaidView = () => {
           </LinearGradient>
         </View>
       </TouchableOpacity>
-      {/* <View style={{padding: 20, alignItems: 'center'}}>
-        <LinearGradient
-          start={{x: 0.0, y: 0.3}}
-          end={{x: 0.6, y: 1.0}}
-          locations={[0.4, 1]}
-          colors={['#f46f69', '#f8c748']}
-          style={{
-            width: '60%',
-            marginBottom: 10,
-            borderRadius: 30,
-          }}>
-          <TouchableOpacity
-            style={() => Alert.alert('Alert!', 'Comming Soon!')}>
-            <Text
-              style={{
-                paddingVertical: 15,
-                paddingHorizontal: 25,
-                fontSize: 18,
-                fontWeight: 'bold',
-                color: '#fff',
-                textAlign: 'center',
-                letterSpacing: 0.8,
-              }}>
-              Go Live
-            </Text>
-          </TouchableOpacity>
-        </LinearGradient>
-      </View> */}
     </>
   );
 };

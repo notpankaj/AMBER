@@ -21,9 +21,9 @@ import Inbox from '../screens/inbox/Inbox';
 // import HomeScreen from '../screens/home/HomeScreen';
 import ShopRoutes from '../screens/shop/ShopRoutes';
 import HomeRoutes from '../screens/home/MidTabViews/HomeRoutes';
-// import PlusRoutes from '../screens/plusBtn/PlusRoutes';
+import PlusRoutes from '../screens/plusBtn/PlusRoutes';
 // import GetPaidView from '../screens/shop/GetPaidView';
-// import GoLiveScreen from '../screens/settings/GoLiveScreen';
+import GoLiveScreen from '../screens/settings/GoLiveScreen';
 import Temp from '../../Temp';
 
 const tabBarIcon = {
@@ -198,7 +198,7 @@ const MainTabs = () => {
                 });
               },
             })}
-            component={Temp}
+            component={GoLiveScreen}
             options={{
               tabBarLabel: 'Earn',
               unmountOnBlur: true,
@@ -223,7 +223,7 @@ const MainTabs = () => {
         )}
         <Tab.Screen
           name="AddPost"
-          component={Temp}
+          component={PlusRoutes}
           options={{
             tabBarLabel: ' ',
             unmountOnBlur: true,

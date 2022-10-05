@@ -1,89 +1,84 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Image, View, Dimensions, Text, Alert } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  END_VIDEO_CALL,
-  SETISVIDEOCALL,
-  SET_CALL_ACTION,
-  SET_IS_ALREADY_IN_CALL,
-} from "../../redux/reducers/actionTypes";
-import SocketIOClient from "socket.io-client";
-import { BASE_URL, SOCKET_URL } from "../../api_services";
-import { useNavigation } from "@react-navigation/core";
-import moment from "moment";
-import SoundPlayer from "react-native-sound-player";
-const { width, height } = Dimensions.get("screen");
+import React, {useEffect, useState, useRef} from 'react';
+import {Image, View, Dimensions, Text, Alert} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useDispatch, useSelector} from 'react-redux';
+import {END_VIDEO_CALL} from '../../redux/reducers/actionTypes';
+import SocketIOClient from 'socket.io-client';
+import {BASE_URL, SOCKET_URL} from '../../api_services';
+import {useNavigation} from '@react-navigation/core';
+import moment from 'moment';
+import SoundPlayer from 'react-native-sound-player';
+const {width, height} = Dimensions.get('screen');
 
 let _onFinishedPlayingSubscription;
 let _onFinishedLoadingSubscription;
 let _onFinishedLoadingFileSubscription;
 let _onFinishedLoadingURLSubscription;
 
-const CallIncoming = ({ route }) => {
-  console.log(route, "FROM CALL INCOMING");
+const CallIncoming = ({route}) => {
+  console.log(route, 'FROM CALL INCOMING');
 
-  console.log(route, "FROM CALL INCOMING");
-  const { notificationData } = route.params;
+  console.log(route, 'FROM CALL INCOMING');
+  const {notificationData} = route.params;
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { auth, call } = useSelector((state) => state);
+  const {auth, call} = useSelector(state => state);
   const socketRef = useRef(null);
 
   const hitHistoryUpdate = async () => {
-    console.log("HITTING HISTORY UPDATE");
+    console.log('HITTING HISTORY UPDATE');
     const url = `${BASE_URL}/history/update/${notificationData?.data?.historyId}`;
     const payload = {
-      duration: "00:00:00",
-      time: moment().format("h:mm:ss a"),
+      duration: '00:00:00',
+      time: moment().format('h:mm:ss a'),
     };
-    console.log({ url, payload });
+    console.log({url, payload});
     fetch(url, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
-        "x-access-token": auth?.accessToken,
+        'Content-Type': 'application/json',
+        'x-access-token': auth?.accessToken,
       },
       body: JSON.stringify(payload),
     })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res, "hitHistoryUpdate");
+      .then(res => res.json())
+      .then(res => {
+        console.log(res, 'hitHistoryUpdate');
         if (res.isSuccess) {
         } else {
           console.log(res);
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
       });
   };
 
   const hitAcceptCallSocket = () => {
-    console.log("HITTING acceptCall  SOCKET");
+    console.log('HITTING acceptCall  SOCKET');
 
     let data;
     if (notificationData?.withSocket) {
-      data = { Id: notificationData?.data?.channelName };
+      data = {Id: notificationData?.data?.channelName};
     } else {
-      data = { Id: notificationData?.channelName };
+      data = {Id: notificationData?.channelName};
     }
-    socketRef.current?.emit("acceptCall", data);
+    socketRef.current?.emit('acceptCall', data);
   };
   const hitCallRejectSocket = () => {
-    console.log("HITTING rejected  SOCKET");
+    console.log('HITTING rejected  SOCKET');
 
     let data;
     if (notificationData?.withSocket) {
-      data = { to: notificationData?.data?.channelName };
+      data = {to: notificationData?.data?.channelName};
     } else {
-      data = { to: notificationData?.channelName };
+      data = {to: notificationData?.channelName};
     }
 
-    socketRef.current?.emit("rejected", data);
+    socketRef.current?.emit('rejected', data);
   };
 
   const handleAcceptIncomingCall = () => {
@@ -96,68 +91,68 @@ const CallIncoming = ({ route }) => {
         api_uid: notificationData?.data?.userId,
         api_agora_token: notificationData?.data?.token,
         channel_id: notificationData?.data?.channelName,
-        call_type: "RECIVER",
-        call_mode: "NORMAL",
+        call_type: 'RECIVER',
+        call_mode: 'NORMAL',
         callingToUserId: null,
         call_rate: notificationData?.data?.popularCallrate
           ? notificationData?.data?.popularCallrate
           : notificationData?.data?.callRate,
         historyId: notificationData?.data?.historyId,
       };
-      console.log(paramData, "paramData---1", notificationData);
-      navigation.navigate("LiveVideoCall", paramData);
+      console.log(paramData, 'paramData---1', notificationData);
+      navigation.navigate('LiveVideoCall', paramData);
     } else {
       const paramData = {
         api_uid: notificationData?.userId,
         api_agora_token: notificationData.token,
         channel_id: notificationData.channelName,
-        call_type: "RECIVER",
-        call_mode: "NORMAL",
+        call_type: 'RECIVER',
+        call_mode: 'NORMAL',
         callingToUserId: null,
         call_rate: notificationData?.popularCallrate
           ? notificationData?.popularCallrate
           : notificationData?.callRate,
         historyId: notificationData?.historyId,
       };
-      console.log(paramData, "paramData--2", notificationData);
-      navigation.navigate("LiveVideoCall", paramData);
+      console.log(paramData, 'paramData--2', notificationData);
+      navigation.navigate('LiveVideoCall', paramData);
     }
   };
-  const { latestNotification } = useSelector((state) => state.notification);
+  const {latestNotification} = useSelector(state => state.notification);
 
   const handleDeclineIncomingCall = async () => {
     //new
     hitCallRejectSocket();
 
     //old
-    socketRef.current.emit("call-decline");
-    console.log("TRIGGER CALL DECLINE CALL SOCKET");
+    socketRef.current.emit('call-decline');
+    console.log('TRIGGER CALL DECLINE CALL SOCKET');
     await hitHistoryUpdate();
-    console.log("TRIGGER END CALL");
-    navigation.navigate("Home");
-    dispatch({ type: END_VIDEO_CALL });
+    console.log('TRIGGER END CALL');
+    navigation.navigate('Home');
+    dispatch({type: END_VIDEO_CALL});
     socketRef.current.disconnect();
   };
 
   const handleEndCall = () => {
     //  make socket connection
     socketRef.current = SocketIOClient(SOCKET_URL, {
-      transports: ["websocket"],
+      transports: ['websocket'],
       query: {
         token: auth?.accessToken,
       },
     });
-    console.log({ socketRef });
+    console.log({socketRef});
     // listen for socket errors
-    socketRef.current.on("oops", (oops) => console.log({ oops }));
+    socketRef.current.on('oops', oops => console.log({oops}));
     //listen for call close
-    console.log("listen for call close", socketRef);
-    socketRef.current.on("close", (data) => {
-      console.log(data, "socket close Call");
-      Alert.alert("Video Call", "Call Is Closed by other User!", [
+    console.log('listen for call close', socketRef);
+    socketRef.current.on('close', data => {
+      console.log(data, 'socket close Call');
+      Alert.alert('Video Call', 'Call Is Closed by other User!', [
         {
-          text: "OK",
-          onPress: () => navigation.navigate("Home"),
+          text: 'OK',
+          onPress: () => navigation.navigate('Home'),
         },
       ]);
     });
@@ -170,9 +165,9 @@ const CallIncoming = ({ route }) => {
 
   const handlePlayRing = async () => {
     try {
-      SoundPlayer.playSoundFile("ring1", "wav");
+      SoundPlayer.playSoundFile('ring1', 'wav');
     } catch (error) {
-      console.log(error, "handlePlayRing");
+      console.log(error, 'handlePlayRing');
     }
   };
 
@@ -187,29 +182,29 @@ const CallIncoming = ({ route }) => {
     handlePlayRing();
 
     _onFinishedPlayingSubscription = SoundPlayer.addEventListener(
-      "FinishedPlaying",
-      ({ success }) => {
+      'FinishedPlaying',
+      ({success}) => {
         handlePlayRing();
-        console.log("finished playing", success);
-      }
+        console.log('finished playing', success);
+      },
     );
     _onFinishedLoadingSubscription = SoundPlayer.addEventListener(
-      "FinishedLoading",
-      ({ success }) => {
-        console.log("finished loading", success);
-      }
+      'FinishedLoading',
+      ({success}) => {
+        console.log('finished loading', success);
+      },
     );
     _onFinishedLoadingFileSubscription = SoundPlayer.addEventListener(
-      "FinishedLoadingFile",
-      ({ success, name, type }) => {
-        console.log("finished loading file", success, name, type);
-      }
+      'FinishedLoadingFile',
+      ({success, name, type}) => {
+        console.log('finished loading file', success, name, type);
+      },
     );
     _onFinishedLoadingURLSubscription = SoundPlayer.addEventListener(
-      "FinishedLoadingURL",
-      ({ success, url }) => {
-        console.log("finished loading url", success, url);
-      }
+      'FinishedLoadingURL',
+      ({success, url}) => {
+        console.log('finished loading url', success, url);
+      },
     );
 
     return () => {
@@ -222,17 +217,16 @@ const CallIncoming = ({ route }) => {
       style={{
         width: width,
         height: height,
-      }}
-    >
+      }}>
       {/* bg start */}
       <Image
         source={{
-          uri: "https://images.unsplash.com/photo-1513379733131-47fc74b45fc7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTN8fG1vZGVsfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
+          uri: 'https://images.unsplash.com/photo-1513379733131-47fc74b45fc7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTN8fG1vZGVsfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
         }}
         style={{
           width: width,
           height: height,
-          resizeMode: "cover",
+          resizeMode: 'cover',
           opacity: 0.8,
           zIndex: -69,
         }}
@@ -243,20 +237,18 @@ const CallIncoming = ({ route }) => {
 
       <View
         style={{
-          position: "absolute",
+          position: 'absolute',
           top: 200,
-          width: "100%",
-        }}
-      >
+          width: '100%',
+        }}>
         <Text
           style={{
             fontSize: 35,
-            fontWeight: "bold",
-            textAlign: "center",
-            color: "#fff",
-          }}
-        >
-          {latestNotification?.data?.name || "unknow"} is calling...
+            fontWeight: 'bold',
+            textAlign: 'center',
+            color: '#fff',
+          }}>
+          {latestNotification?.data?.name || 'unknow'} is calling...
         </Text>
       </View>
       {/* Text End */}
@@ -264,26 +256,24 @@ const CallIncoming = ({ route }) => {
       {/* Call Btn Start */}
       <View
         style={{
-          flexDirection: "row",
-          justifyContent: "space-evenly",
+          flexDirection: 'row',
+          justifyContent: 'space-evenly',
           width: 300,
-          position: "absolute",
+          position: 'absolute',
           bottom: 200,
-          width: "100%",
-        }}
-      >
+          width: '100%',
+        }}>
         <TouchableOpacity
           style={{
             width: 80,
             height: 80,
             borderRadius: 50,
-            backgroundColor: "#f23637",
-            justifyContent: "center",
-            alignItems: "center",
+            backgroundColor: '#f23637',
+            justifyContent: 'center',
+            alignItems: 'center',
             opacity: 1,
           }}
-          onPress={() => handleDeclineIncomingCall()}
-        >
+          onPress={() => handleDeclineIncomingCall()}>
           <FontAwesome name="close" size={35} color="#fff" />
         </TouchableOpacity>
         <TouchableOpacity
@@ -291,13 +281,12 @@ const CallIncoming = ({ route }) => {
             width: 80,
             height: 80,
             borderRadius: 50,
-            backgroundColor: "#49cf76",
-            justifyContent: "center",
-            alignItems: "center",
+            backgroundColor: '#49cf76',
+            justifyContent: 'center',
+            alignItems: 'center',
             opacity: 1,
           }}
-          onPress={() => handleAcceptIncomingCall()}
-        >
+          onPress={() => handleAcceptIncomingCall()}>
           <Ionicons name="call" size={35} color="#fff" />
         </TouchableOpacity>
       </View>
