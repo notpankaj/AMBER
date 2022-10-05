@@ -1,8 +1,6 @@
 import React, {useEffect} from 'react';
 import {Image, StyleSheet, View, Text} from 'react-native';
 import {BlurView} from '@react-native-community/blur';
-import Toast from 'react-native-toast-message';
-import {useNavigation} from '@react-navigation/core';
 import {AGREE_TO_TERM_AND_CONDITION_KEY, colors} from '../constants';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -14,17 +12,11 @@ import {TabBarContext} from '../../App';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ProfileRoutes from '../screens/profile/ProfileRoutes';
 
-// import Shop from '../screens/shop/Shop';
-// import AddPost from '../screens/add_post/AddPost';
 import Inbox from '../screens/inbox/Inbox';
-// import Profile from '../screens/profile/Profile';
-// import HomeScreen from '../screens/home/HomeScreen';
 import ShopRoutes from '../screens/shop/ShopRoutes';
 import HomeRoutes from '../screens/home/MidTabViews/HomeRoutes';
 import PlusRoutes from '../screens/plusBtn/PlusRoutes';
-// import GetPaidView from '../screens/shop/GetPaidView';
 import GoLiveScreen from '../screens/settings/GoLiveScreen';
-import Temp from '../../Temp';
 
 const tabBarIcon = {
   width: 25,
@@ -50,20 +42,20 @@ const MainTabs = () => {
   const showTabBar = tabSettings?.showTabBar;
   console.log(React.useContext(TabBarContext), 'hsdfijhdjsfhasf');
 
-  // const checkTermsAndConditionsAgreement = async () => {
-  //   try {
-  //     const res = await AsyncStorage.getItem(AGREE_TO_TERM_AND_CONDITION_KEY);
-  //     // console.log(res, "AGREE_TO_TERM_AND_CONDITION_KEY");
-  //     if (!res) {
-  //       dispatch({type: ADD_POPUP_OVERLAY});
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const checkTermsAndConditionsAgreement = async () => {
+    try {
+      const res = await AsyncStorage.getItem(AGREE_TO_TERM_AND_CONDITION_KEY);
+      // console.log(res, "AGREE_TO_TERM_AND_CONDITION_KEY");
+      if (!res) {
+        dispatch({type: ADD_POPUP_OVERLAY});
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   React.useEffect(() => {
-    // checkTermsAndConditionsAgreement();
+    checkTermsAndConditionsAgreement();
   }, []);
 
   return (
